@@ -23,10 +23,10 @@ public:
 	static void deleteSprite(Sprite* sprite);//toIm
 
 	void setImage(int i){curImage = i;}
-	void addImage(std::string bmp);//toIm
-	void addImage(Image* img);//toIm
-	Image* getImage(void){return images[curImage];}
-	void setColorKey(bool flag,Uint8 R,Uint8 G,Uint8 B,bool unshared=false);
+	void addImage(std::string bmp);
+	void addImage(Image* img);
+	Image* getImage(int i){return images[i];}
+	void setImageColorKey(int sprite,bool flag,Uint8 R,Uint8 G,Uint8 B,bool unshared=false);
 	void setPriority(int pri);
 
 	int X(void){return dstrect->x;}

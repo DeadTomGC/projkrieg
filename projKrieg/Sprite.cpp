@@ -123,20 +123,20 @@ Sprite* Sprite::makeSprite(Image* img,int imageCount){
 }
 
 
-void Sprite::setColorKey(bool flag,Uint8 R,Uint8 G,Uint8 B,bool unshared){ //sets color key for current image in sprite
+void Sprite::setImageColorKey(int image,bool flag,Uint8 R,Uint8 G,Uint8 B,bool unshared){ //sets color key for image in sprite
 	
 
 		if(flag){
-			SDL_SetColorKey(images[curImage]->surface,SDL_TRUE,SDL_MapRGB(images[curImage]->surface->format,R,G,B));
+			SDL_SetColorKey(images[image]->surface,SDL_TRUE,SDL_MapRGB(images[image]->surface->format,R,G,B));
 		}else{
-			SDL_SetColorKey(images[curImage]->surface,SDL_FALSE,SDL_MapRGB(images[curImage]->surface->format,R,G,B));
+			SDL_SetColorKey(images[image]->surface,SDL_FALSE,SDL_MapRGB(images[image]->surface->format,R,G,B));
 		}
 		
 		//hmm should we delete the old texture?
 		if(unshared){
-			SDL_DestroyTexture(images[curImage]->texture);
+			SDL_DestroyTexture(images[image]->texture);
 		}
-		images[curImage]->texture = SDL_CreateTextureFromSurface(renderer,images[curImage]->surface);
+		images[image]->texture = SDL_CreateTextureFromSurface(renderer,images[image]->surface);
 }
 
 void Sprite::setPriority(int pri){
@@ -230,4 +230,32 @@ void Sprite::renderSprites(){
 		SDL_RenderPresent(current->rend);
 		current = current->next;
 	}
+}
+
+void Sprite::addImage(std::string bmp){
+
+	if(nextImage<imageCount){
+		images[nextImage] = new Image();
+		images[nextImage]->surface=SDL_LoadBMP(bmp.c_str());
+		images[nextImage]->texture=SDL_CreateTextureFromSurface(renderer,images[nextImage]->surface);
+		images[nextImage]->renderer = renderer;
+		nextImage++;
+	}
+
+}
+
+void Sprite::addImage(Image* img){
+
+	if(nextImage<imageCount){
+		if(img->renderer!=renderer){
+			images[nextImage] = new Image();
+			images[nextImage]->renderer = renderer;
+			images[nextImage]->surface = img->surface;
+			images[nextImage]->texture=SDL_CreateTextureFromSurface(renderer,images[nextImage]->surface);
+		}else{
+			images[nextImage] = img;
+		}
+		nextImage++;
+	}
+
 }
