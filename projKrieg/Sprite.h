@@ -19,7 +19,7 @@ public:
 	static Sprite* loadSprite(std::string bmp,SDL_Renderer* renderer,int imageCount=1);
 	static Sprite* makeSprite(Image* img,int imageCount=1);
 	static Sprite* cloneSprite(Sprite* original);
-	static Sprite* cloneSprite(Sprite* original,SDL_Renderer* renderer);//toIm
+	static Sprite* cloneSprite(Sprite* original,SDL_Renderer* renderer);
 	static void deleteSprite(Sprite* sprite);//toIm
 
 	void setImage(int i){curImage = i;}

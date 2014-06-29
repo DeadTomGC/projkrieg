@@ -298,3 +298,46 @@ Sprite* Sprite::cloneSprite(Sprite* original){
 		return NULL;
 	}
 }
+
+
+Sprite* Sprite::cloneSprite(Sprite* original,SDL_Renderer* renderer){
+	if(original!=NULL){
+		Sprite* temp = new Sprite();
+		temp->renderer=renderer;
+		temp->imageCount=original->imageCount;
+		temp->images=new Image*[original->imageCount];
+		for(int i=0;i<original->imageCount;i++){
+			temp->images[i]=new Image();
+			temp->images[i]->renderer=renderer;
+			temp->images[i]->surface=original->images[i]->surface;
+			temp->images[i]->texture=SDL_CreateTextureFromSurface(renderer,temp->images[i]->surface);
+		}
+		temp->nextImage=original->nextImage;
+
+		temp->dstrect = new SDL_Rect();
+		temp->dstrect->w=original->dstrect->w;
+		temp->dstrect->h=original->dstrect->h;
+		temp->dstrect->x=original->dstrect->x;
+		temp->dstrect->y=original->dstrect->y;
+		
+		if(original->srcrect!=NULL){
+			temp->srcrect = new SDL_Rect();
+			temp->srcrect->w=original->srcrect->w;
+			temp->srcrect->h=original->srcrect->h;
+			temp->srcrect->x=original->srcrect->x;
+			temp->srcrect->y=original->srcrect->y;
+		}
+		
+		Sprite* temp2;
+		temp2=zero->next;
+		zero->next=temp;
+		temp->next=temp2;
+		
+		temp->priList=zero;
+
+		temp->setPriority(original->priList->priority);
+		return temp;
+	}else{
+		return NULL;
+	}
+}
