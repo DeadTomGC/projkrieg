@@ -18,7 +18,7 @@ public:
 	static Sprite* loadSprite(std::string bmp,int imageCount=1);
 	static Sprite* loadSprite(std::string bmp,SDL_Renderer* renderer,int imageCount=1);
 	static Sprite* makeSprite(Image* img,int imageCount=1);
-	static Sprite* cloneSprite(Sprite* original);//toIm
+	static Sprite* cloneSprite(Sprite* original);
 	static Sprite* cloneSprite(Sprite* original,SDL_Renderer* renderer);//toIm
 	static void deleteSprite(Sprite* sprite);//toIm
 
@@ -76,6 +76,7 @@ private:
 				next->prev=prev;
 	}
 	Sprite();
+	Sprite(Sprite &s);
 	~Sprite();
 
 };

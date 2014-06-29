@@ -202,7 +202,7 @@ void Sprite::renderSprites(){
 	while(currentL!=NULL){
 		currentS=currentL->next;
 		while(currentS!=NULL){
-			SDL_RenderCopy(currentS->renderer, currentS->images[currentS->curImage]->texture, currentS->srcrect, currentS->dstrect);
+			SDL_RenderCopy(currentS->renderer, currentS->images[currentS->curImage]->texture, currentS->srcrect, currentS->dstrect); //add textures to the appropriate renderers.
 			if(temp==NULL){
 				temp = new RenderLink();
 				temp->rend=currentS->renderer;
@@ -226,7 +226,7 @@ void Sprite::renderSprites(){
 		currentL=currentL->nextHigher;
 	}
 	RenderLink* current = temp;
-	while(current!=NULL){
+	while(current!=NULL){//render all frames
 		SDL_RenderPresent(current->rend);
 		current = current->next;
 	}
@@ -258,4 +258,43 @@ void Sprite::addImage(Image* img){
 		nextImage++;
 	}
 
+}
+
+Sprite* Sprite::cloneSprite(Sprite* original){
+	if(original!=NULL){
+		Sprite* temp = new Sprite();
+		temp->renderer=original->renderer;
+		temp->imageCount=original->imageCount;
+		temp->images=new Image*[original->imageCount];
+		for(int i=0;i<original->imageCount;i++){
+			temp->images[i]=original->images[i];
+		}
+		temp->nextImage=original->nextImage;
+
+		temp->dstrect = new SDL_Rect();
+		temp->dstrect->w=original->dstrect->w;
+		temp->dstrect->h=original->dstrect->h;
+		temp->dstrect->x=original->dstrect->x;
+		temp->dstrect->y=original->dstrect->y;
+		
+		if(original->srcrect!=NULL){
+			temp->srcrect = new SDL_Rect();
+			temp->srcrect->w=original->srcrect->w;
+			temp->srcrect->h=original->srcrect->h;
+			temp->srcrect->x=original->srcrect->x;
+			temp->srcrect->y=original->srcrect->y;
+		}
+		
+		Sprite* temp2;
+		temp2=zero->next;
+		zero->next=temp;
+		temp->next=temp2;
+		
+		temp->priList=zero;
+
+		temp->setPriority(original->priList->priority);
+		return temp;
+	}else{
+		return NULL;
+	}
 }

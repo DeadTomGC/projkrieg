@@ -15,7 +15,7 @@ int main(int argc, char *argv[]){
 	mysprite->setImageColorKey(0,true,0,0,0,1);
 	mysprite->setImageColorKey(1,true,0,0,0,1);
 	Sprite* sprite2 = Sprite::loadSprite("back.bmp");
-	Sprite* sprite3 = Sprite::makeSprite(mysprite->getImage(0));
+	Sprite* sprite3 = Sprite::cloneSprite(mysprite);
 	sprite3->setPriority(1);
 	sprite3->sizeTo(200,300);
 	sprite2->sizeTo(640,480);
@@ -40,9 +40,9 @@ int main(int argc, char *argv[]){
 			mysprite->moveTo(mysprite->X(),mysprite->Y()+2);
 		}
 		if(m_keystate[SDL_SCANCODE_F]==1){
-			mysprite->setImage(1);
+			sprite3->setImage(1);
 		}else{
-			mysprite->setImage(0);
+			sprite3->setImage(0);
 		}
 		Sprite::renderSprites();
 	}
