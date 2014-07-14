@@ -2,6 +2,7 @@
 #include "Sprite.h"
 #include "SDL.h"
 
+
 Sprite::PriList* Sprite::zero=NULL;
 SDL_Renderer* Sprite::defaultRenderer=NULL;
 
@@ -13,6 +14,7 @@ Sprite::Sprite(){
 	priList=NULL;
 	dstrect=NULL;
 	srcrect=NULL;
+	vis = true;
 }
 
 Sprite* Sprite::loadSprite(std::string bmp,int imageCount){
@@ -202,23 +204,25 @@ void Sprite::renderSprites(){
 	while(currentL!=NULL){
 		currentS=currentL->next;
 		while(currentS!=NULL){
-			SDL_RenderCopy(currentS->renderer, currentS->images[currentS->curImage]->texture, currentS->srcrect, currentS->dstrect); //add textures to the appropriate renderers.
-			if(temp==NULL){
-				temp = new RenderLink();
-				temp->rend=currentS->renderer;
-			}else{
-				RenderLink* current = temp;
-				bool notFound=true;
-				while(current!=NULL){
-					if(current->rend == currentS->renderer)
-						notFound = false;
-					current = current->next;
-				}
-				if(notFound){
-					RenderLink* temp2 = temp;
+			if(currentS->vis){
+				SDL_RenderCopy(currentS->renderer, currentS->images[currentS->curImage]->texture, currentS->srcrect, currentS->dstrect); //add textures to the appropriate renderers.
+				if(temp==NULL){
 					temp = new RenderLink();
 					temp->rend=currentS->renderer;
-					temp->next=temp2;
+				}else{
+					RenderLink* current = temp;
+					bool notFound=true;
+					while(current!=NULL){
+						if(current->rend == currentS->renderer)
+							notFound = false;
+						current = current->next;
+					}
+					if(notFound){
+						RenderLink* temp2 = temp;
+						temp = new RenderLink();
+						temp->rend=currentS->renderer;
+						temp->next=temp2;
+					}
 				}
 			}
 			currentS=currentS->next;
@@ -340,4 +344,40 @@ Sprite* Sprite::cloneSprite(Sprite* original,SDL_Renderer* renderer){
 	}else{
 		return NULL;
 	}
+}
+
+
+void Sprite::deleteSprite(Sprite* sprite,bool deleteResources){
+	if(!deleteResources){
+		sprite->clearFromList();
+		delete sprite;
+	}else{
+		sprite->clearFromList();
+		//TODO:delete resources
+		delete sprite;
+	}
+
+}
+
+bool Sprite::rectCol(Sprite* obj){//fix this using intersection
+	bool inter=false;
+	if(intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y))){
+		inter=true;
+	}else if(intersection(Point(dstrect->x+dstrect->w,dstrect->y),Point(dstrect->x+dstrect->w,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y))){
+		inter=true;
+	}else if(intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y+obj->dstrect->h),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y+obj->dstrect->h))){
+		inter=true;
+	}else if(intersection(Point(dstrect->x+dstrect->w,dstrect->y),Point(dstrect->x+dstrect->w,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y+obj->dstrect->h),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y+obj->dstrect->h))){
+		inter=true;
+		//
+	}else if(intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x+dstrect->w,dstrect->y),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x,obj->dstrect->y+obj->dstrect->h))){
+		inter=true;
+	}else if(intersection(Point(dstrect->x,dstrect->y+dstrect->h),Point(dstrect->x+dstrect->w,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x,obj->dstrect->y+obj->dstrect->h))){
+		inter=true;
+	}else if(intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x+dstrect->w,dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y+obj->dstrect->h))){
+		inter=true;
+	}else if(intersection(Point(dstrect->x,dstrect->y+dstrect->h),Point(dstrect->x+dstrect->w,dstrect->y+dstrect->h),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y+obj->dstrect->h))){
+		inter=true;
+	}
+	return inter;
 }

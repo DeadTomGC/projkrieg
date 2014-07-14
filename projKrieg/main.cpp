@@ -44,6 +44,12 @@ int main(int argc, char *argv[]){
 		}else{
 			sprite3->setImage(0);
 		}
+		Point* temp;
+		if(mysprite->rectCol(sprite3)){
+			sprite2->setVisible(false);
+		}else{
+			sprite2->setVisible(true);
+		}
 		Sprite::renderSprites();
 	}
 

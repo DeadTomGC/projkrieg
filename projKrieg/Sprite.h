@@ -1,5 +1,6 @@
 #include <string>
 #include "SDL.h"
+#include "utils.h"
 
 
 struct Image{
@@ -20,21 +21,23 @@ public:
 	static Sprite* makeSprite(Image* img,int imageCount=1);
 	static Sprite* cloneSprite(Sprite* original);
 	static Sprite* cloneSprite(Sprite* original,SDL_Renderer* renderer);
-	static void deleteSprite(Sprite* sprite);//toIm
-
+	static void deleteSprite(Sprite* sprite,bool deleteResources=false);//TODO: handle delete true
+	//non-static functions:
 	void setImage(int i){curImage = i;}
 	void addImage(std::string bmp);
 	void addImage(Image* img);
 	Image* getImage(int i){return images[i];}
 	void setImageColorKey(int sprite,bool flag,Uint8 R,Uint8 G,Uint8 B,bool unshared=false);
 	void setPriority(int pri);
-
+	bool rectCol(Sprite* obj);//fix this using intersection
+	
 	int X(void){return dstrect->x;}
 	int Y(void){return dstrect->y;}
-	void moveTo(int x,int y){dstrect->x=x;dstrect->y=y;};
-	void sizeTo(int w,int h){dstrect->w=w;dstrect->h=h;};
+	void moveTo(int x,int y){dstrect->x=x;dstrect->y=y;}
+	void sizeTo(int w,int h){dstrect->w=w;dstrect->h=h;}
+	void setVisible(bool vis){this->vis=vis;}
 protected:
-
+	//classes:
 	class PriList{
 	public:
 		PriList(){
@@ -55,17 +58,19 @@ protected:
 		RenderLink* next;
 		SDL_Renderer* rend;
 	};
-
+	//static vars:
 	static PriList* zero;
 	static SDL_Renderer* defaultRenderer;
-
+	//non-static vars:
 	SDL_Rect *dstrect,*srcrect;
 	int imageCount,nextImage,curImage;
 	SDL_Renderer* renderer;
 	Image** images;
 	Sprite *next,*prev;
 	PriList* priList;
+	bool vis;
 private:
+	//helper that clears the current sprite from the render list
 	void clearFromList(){
 		if(prev==NULL){
 			priList->next=next;	
@@ -77,7 +82,7 @@ private:
 	}
 	Sprite();
 	Sprite(Sprite &s);
-	~Sprite();
+	~Sprite(){}
 
 };
 
