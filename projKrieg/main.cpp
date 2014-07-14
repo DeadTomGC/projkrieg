@@ -22,6 +22,8 @@ int main(int argc, char *argv[]){
 	sprite2->setPriority(-1);
 	SDL_GetKeyboardState(&nkeys);
 	m_keystate = SDL_GetKeyboardState(0);
+	mysprite->moveTo(400,300);
+	sprite3->moveTo(100,100);
 	while(running){
 		SDL_PumpEvents();
 		if(m_keystate[SDL_SCANCODE_ESCAPE]==1){
@@ -44,12 +46,14 @@ int main(int argc, char *argv[]){
 		}else{
 			sprite3->setImage(0);
 		}
-		Point* temp;
-		if(mysprite->rectCol(sprite3)){
+		mysprite->autoCol(sprite3);
+
+		/*Parr* temp;
+		if(temp=mysprite->rectCol(sprite3)){
 			sprite2->setVisible(false);
 		}else{
 			sprite2->setVisible(true);
-		}
+		}*/
 		Sprite::renderSprites();
 	}
 

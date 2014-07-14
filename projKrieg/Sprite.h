@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include "SDL.h"
 #include "utils.h"
@@ -29,8 +30,9 @@ public:
 	Image* getImage(int i){return images[i];}
 	void setImageColorKey(int sprite,bool flag,Uint8 R,Uint8 G,Uint8 B,bool unshared=false);
 	void setPriority(int pri);
-	bool rectCol(Sprite* obj);//fix this using intersection
-	
+	Parr* rectCol(Sprite* obj);
+	bool autoCol(Sprite* obj);
+
 	int X(void){return dstrect->x;}
 	int Y(void){return dstrect->y;}
 	void moveTo(int x,int y){dstrect->x=x;dstrect->y=y;}

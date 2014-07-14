@@ -1,4 +1,3 @@
-
 #include "Sprite.h"
 #include "SDL.h"
 
@@ -359,25 +358,61 @@ void Sprite::deleteSprite(Sprite* sprite,bool deleteResources){
 
 }
 
-bool Sprite::rectCol(Sprite* obj){//fix this using intersection
-	bool inter=false;
-	if(intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y))){
-		inter=true;
-	}else if(intersection(Point(dstrect->x+dstrect->w,dstrect->y),Point(dstrect->x+dstrect->w,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y))){
-		inter=true;
-	}else if(intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y+obj->dstrect->h),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y+obj->dstrect->h))){
-		inter=true;
-	}else if(intersection(Point(dstrect->x+dstrect->w,dstrect->y),Point(dstrect->x+dstrect->w,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y+obj->dstrect->h),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y+obj->dstrect->h))){
-		inter=true;
+Parr* Sprite::rectCol(Sprite* obj){//fix this using intersection
+	Parr* inters=new Parr();
+	Point* temp;
+	if(temp=intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y))){
+		inters->add(temp);
+	}else if(temp=intersection(Point(dstrect->x+dstrect->w,dstrect->y),Point(dstrect->x+dstrect->w,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y))){
+		inters->add(temp);
+	}else if(temp=intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y+obj->dstrect->h),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y+obj->dstrect->h))){
+		inters->add(temp);
+	}else if(temp=intersection(Point(dstrect->x+dstrect->w,dstrect->y),Point(dstrect->x+dstrect->w,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y+obj->dstrect->h),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y+obj->dstrect->h))){
+		inters->add(temp);
 		//
-	}else if(intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x+dstrect->w,dstrect->y),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x,obj->dstrect->y+obj->dstrect->h))){
-		inter=true;
-	}else if(intersection(Point(dstrect->x,dstrect->y+dstrect->h),Point(dstrect->x+dstrect->w,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x,obj->dstrect->y+obj->dstrect->h))){
-		inter=true;
-	}else if(intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x+dstrect->w,dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y+obj->dstrect->h))){
-		inter=true;
-	}else if(intersection(Point(dstrect->x,dstrect->y+dstrect->h),Point(dstrect->x+dstrect->w,dstrect->y+dstrect->h),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y+obj->dstrect->h))){
-		inter=true;
+	}else if(temp=intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x+dstrect->w,dstrect->y),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x,obj->dstrect->y+obj->dstrect->h))){
+		inters->add(temp);
+	}else if(temp=intersection(Point(dstrect->x,dstrect->y+dstrect->h),Point(dstrect->x+dstrect->w,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x,obj->dstrect->y+obj->dstrect->h))){
+		inters->add(temp);
+	}else if(temp=intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x+dstrect->w,dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y+obj->dstrect->h))){
+		inters->add(temp);
+	}else if(temp=intersection(Point(dstrect->x,dstrect->y+dstrect->h),Point(dstrect->x+dstrect->w,dstrect->y+dstrect->h),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y+obj->dstrect->h))){
+		inters->add(temp);
 	}
-	return inter;
+	if(inters->pointC==0){
+		delete inters;
+		return NULL;
+	}else{
+		return inters;
+	}
+}
+
+bool Sprite::autoCol(Sprite* obj){
+	Parr* points;
+	points = rectCol(obj);
+	if(points == NULL){
+		return false;
+	}else{
+		Point center(obj->dstrect->x+(obj->dstrect->w)/2,obj->dstrect->y+(obj->dstrect->h)/2);
+		Point* closest=points->arr[0];
+		for(int i=0;i<points->pointC;i++){ //find closest point to center of obj (this point is the collision we care about)
+			if(dist(points->arr[i],&center)<dist(closest,&center)){
+				closest=points->arr[i];
+			}
+		}
+		if(closest->y>obj->dstrect->y && closest->y<obj->dstrect->y+obj->dstrect->h){
+			if(closest->x>obj->dstrect->x){
+				moveTo(obj->dstrect->x+obj->dstrect->w,Y());
+			}else{
+				moveTo(obj->dstrect->x-dstrect->w,Y());
+			}
+		}else{
+			if(closest->y>obj->dstrect->y){
+				moveTo(X(),obj->dstrect->y+obj->dstrect->h);
+			}else{
+				moveTo(X(),obj->dstrect->y-dstrect->h);
+			}
+		}
+		return true;
+	}
 }
