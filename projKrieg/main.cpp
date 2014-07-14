@@ -24,27 +24,29 @@ int main(int argc, char *argv[]){
 	m_keystate = SDL_GetKeyboardState(0);
 	mysprite->moveTo(400,300);
 	sprite3->moveTo(100,100);
+	sprite3->sizeTo(50,70);
+	mysprite->sizeTo(50,70);
 	while(running){
 		SDL_PumpEvents();
 		if(m_keystate[SDL_SCANCODE_ESCAPE]==1){
 			running=false;
 		}
 		if(m_keystate[SDL_SCANCODE_A]==1){
-			mysprite->moveTo(mysprite->X()-2,mysprite->Y());
+			mysprite->moveTo(mysprite->X()-7,mysprite->Y());
 		}
 		if(m_keystate[SDL_SCANCODE_W]==1){
-			mysprite->moveTo(mysprite->X(),mysprite->Y()-2);
+			mysprite->moveTo(mysprite->X(),mysprite->Y()-7);
 		}
 		if(m_keystate[SDL_SCANCODE_D]==1){
-			mysprite->moveTo(mysprite->X()+2,mysprite->Y());
+			mysprite->moveTo(mysprite->X()+7,mysprite->Y());
 		}
 		if(m_keystate[SDL_SCANCODE_S]==1){
-			mysprite->moveTo(mysprite->X(),mysprite->Y()+2);
+			mysprite->moveTo(mysprite->X(),mysprite->Y()+7);
 		}
-		if(m_keystate[SDL_SCANCODE_F]==1){
-			sprite3->setImage(1);
+		if(m_keystate[SDL_SCANCODE_SPACE]==1){
+			mysprite->setImage(1);
 		}else{
-			sprite3->setImage(0);
+			mysprite->setImage(0);
 		}
 		mysprite->autoCol(sprite3);
 
