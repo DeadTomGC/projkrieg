@@ -14,6 +14,9 @@ Sprite::Sprite(){
 	dstrect=NULL;
 	srcrect=NULL;
 	vis = true;
+	angle = 0;
+	center = new SDL_Point();
+	flip = SDL_FLIP_NONE;
 }
 
 Sprite* Sprite::loadSprite(std::string bmp,int imageCount){
@@ -29,6 +32,8 @@ Sprite* Sprite::loadSprite(std::string bmp,int imageCount){
 		temp->dstrect = new SDL_Rect();
 		temp->dstrect->w=temp->images[0]->surface->w;
 		temp->dstrect->h=temp->images[0]->surface->h;
+		temp->center->x=temp->images[0]->surface->w/2;
+		temp->center->y=temp->images[0]->surface->h/2;
 		temp->dstrect->x=0;
 		temp->dstrect->y=0;
 		temp->nextImage=1;
@@ -65,6 +70,8 @@ Sprite* Sprite::loadSprite(std::string bmp,SDL_Renderer* renderer,int imageCount
 		temp->dstrect = new SDL_Rect();
 		temp->dstrect->w=temp->images[0]->surface->w;
 		temp->dstrect->h=temp->images[0]->surface->h;
+		temp->center->x=temp->images[0]->surface->w/2;
+		temp->center->y=temp->images[0]->surface->h/2;
 		temp->dstrect->x=0;
 		temp->dstrect->y=0;
 		temp->nextImage=1;
@@ -99,6 +106,8 @@ Sprite* Sprite::makeSprite(Image* img,int imageCount){
 		temp->dstrect = new SDL_Rect();
 		temp->dstrect->w=temp->images[0]->surface->w;
 		temp->dstrect->h=temp->images[0]->surface->h;
+		temp->center->x=temp->images[0]->surface->w/2;
+		temp->center->y=temp->images[0]->surface->h/2;
 		temp->dstrect->x=0;
 		temp->dstrect->y=0;
 		temp->nextImage=1;
@@ -204,7 +213,7 @@ void Sprite::renderSprites(){
 		currentS=currentL->next;
 		while(currentS!=NULL){
 			if(currentS->vis){
-				SDL_RenderCopy(currentS->renderer, currentS->images[currentS->curImage]->texture, currentS->srcrect, currentS->dstrect); //add textures to the appropriate renderers.
+				SDL_RenderCopyEx(currentS->renderer, currentS->images[currentS->curImage]->texture, currentS->srcrect, currentS->dstrect,currentS->angle,currentS->center,currentS->flip); //add textures to the appropriate renderers.
 				if(temp==NULL){
 					temp = new RenderLink();
 					temp->rend=currentS->renderer;
@@ -232,6 +241,8 @@ void Sprite::renderSprites(){
 	while(current!=NULL){//render all frames
 		SDL_RenderPresent(current->rend);
 		current = current->next;
+		temp = current;
+		delete temp;
 	}
 }
 
@@ -352,13 +363,17 @@ void Sprite::deleteSprite(Sprite* sprite,bool deleteResources){
 		delete sprite;
 	}else{
 		sprite->clearFromList();
-		//TODO:delete resources
+		for(int i=0;i<sprite->nextImage;i++){//we don't delete renderers...
+			SDL_FreeSurface(sprite->images[i]->surface);
+			SDL_DestroyTexture(sprite->images[i]->texture);
+			delete (sprite->images[i]);
+		}
 		delete sprite;
 	}
 
 }
 
-Parr* Sprite::rectCol(Sprite* obj){//doesn't check verticies
+Parr* Sprite::rectCol(Sprite* obj){//doesn't check verticies or for angled collisions
 	Parr* inters=new Parr();       //IMPORTANT!!! DELETE THE Parr* AFTER USE!!!!
 	Point* temp;
 	if(temp=intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y))){

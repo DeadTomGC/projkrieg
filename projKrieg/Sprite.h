@@ -22,7 +22,7 @@ public:
 	static Sprite* makeSprite(Image* img,int imageCount=1);
 	static Sprite* cloneSprite(Sprite* original);
 	static Sprite* cloneSprite(Sprite* original,SDL_Renderer* renderer);
-	static void deleteSprite(Sprite* sprite,bool deleteResources=false);//TODO: handle delete true
+	static void deleteSprite(Sprite* sprite,bool deleteResources=false);
 	//non-static functions:
 	void setImage(int i){curImage = i;}
 	void addImage(std::string bmp);
@@ -30,17 +30,19 @@ public:
 	Image* getImage(int i){return images[i];}
 	void setImageColorKey(int sprite,bool flag,Uint8 R,Uint8 G,Uint8 B,bool unshared=false);
 	void setPriority(int pri);
-	Parr* rectCol(Sprite* obj);
+	Parr* rectCol(Sprite* obj);//IMPORTANT!!! DELETE THE Parr* AFTER USE!!!!
 	bool autoCol(Sprite* obj);
 
+	double getAngle(){return angle;}
+	void setAngle(double angle){this->angle=angle;}
 	int X(void){return dstrect->x;}
 	int Y(void){return dstrect->y;}
 	void moveTo(int x,int y){dstrect->x=x;dstrect->y=y;}
-	void sizeTo(int w,int h){dstrect->w=w;dstrect->h=h;}
+	void sizeTo(int w,int h){dstrect->w=w;dstrect->h=h;center->x=w/2;center->y=h/2;}
 	void setVisible(bool vis){this->vis=vis;}
 protected:
 	//classes:
-	class PriList{
+	class PriList{//used as a single priority (keeps all sprites at this level)
 	public:
 		PriList(){
 			priority=-5000;
@@ -51,7 +53,7 @@ protected:
 		PriList* nextHigher;
 		Sprite* next;
 	};
-	class RenderLink{
+	class RenderLink{//used to keep track of all the renderers used by tracked sprites
 	public:
 		RenderLink(){
 			next = NULL;
@@ -61,15 +63,20 @@ protected:
 		SDL_Renderer* rend;
 	};
 	//static vars:
-	static PriList* zero;
-	static SDL_Renderer* defaultRenderer;
+	static PriList* zero;//the lowest priority that starts at 0 but may not remain there
+	static SDL_Renderer* defaultRenderer;//the default renderer
 	//non-static vars:
-	SDL_Rect *dstrect,*srcrect;
-	int imageCount,nextImage,curImage;
-	SDL_Renderer* renderer;
-	Image** images;
-	Sprite *next,*prev;
-	PriList* priList;
+	SDL_Rect *dstrect,*srcrect;//destination rectangle and source rectanlge
+	int imageCount;//max images
+	int nextImage;//where to place next image in array
+	int curImage;//which image will be rendered
+	double angle;//angle to render at
+	SDL_Point* center;//center from where to rotate
+	SDL_RendererFlip flip;//what flip mode
+	SDL_Renderer* renderer;//which renderer to render with
+	Image** images;//array of image pointers
+	Sprite *next,*prev;//the next and previous sprite in the PriList
+	PriList* priList;//priList that the sprite is linked to
 	bool vis;
 private:
 	//helper that clears the current sprite from the render list

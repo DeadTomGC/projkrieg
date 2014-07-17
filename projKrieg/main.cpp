@@ -43,6 +43,12 @@ int main(int argc, char *argv[]){
 		if(m_keystate[SDL_SCANCODE_S]==1){
 			mysprite->moveTo(mysprite->X(),mysprite->Y()+7);
 		}
+		if(m_keystate[SDL_SCANCODE_Q]==1){
+			mysprite->setAngle(mysprite->getAngle()-5);
+		}
+		if(m_keystate[SDL_SCANCODE_E]==1){
+			mysprite->setAngle(mysprite->getAngle()+5);
+		}
 		if(m_keystate[SDL_SCANCODE_SPACE]==1){
 			mysprite->setImage(1);
 		}else{
