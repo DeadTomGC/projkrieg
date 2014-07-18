@@ -9,7 +9,13 @@ struct Image{
 	SDL_Texture* texture;
 	SDL_Renderer* renderer;
 };
-
+enum ColState{
+	NONE,
+	OBJ_LEFT,
+	OBJ_RIGHT,
+	OBJ_UP,
+	OBJ_DOWN
+};
 
 
 
@@ -31,13 +37,13 @@ public:
 	void setImageColorKey(int sprite,bool flag,Uint8 R,Uint8 G,Uint8 B,bool unshared=false);
 	void setPriority(int pri);
 	Parr* rectCol(Sprite* obj);//IMPORTANT!!! DELETE THE Parr* AFTER USE!!!!
-	bool autoCol(Sprite* obj);
+	ColState autoCol(Sprite* obj);
 
 	double getAngle(){return angle;}
 	void setAngle(double angle){this->angle=angle;}
-	int X(void){return dstrect->x;}
-	int Y(void){return dstrect->y;}
-	void moveTo(int x,int y){dstrect->x=x;dstrect->y=y;}
+	double X(void){return x;}
+	double Y(void){return y;}
+	void moveTo(double x,double y){this->x=x;this->y=y;dstrect->x=(int)x;dstrect->y=(int)y;}
 	void sizeTo(int w,int h){dstrect->w=w;dstrect->h=h;center->x=w/2;center->y=h/2;}
 	void setVisible(bool vis){this->vis=vis;}
 protected:
@@ -67,6 +73,7 @@ protected:
 	static SDL_Renderer* defaultRenderer;//the default renderer
 	//non-static vars:
 	SDL_Rect *dstrect,*srcrect;//destination rectangle and source rectanlge
+	double x,y;
 	int imageCount;//max images
 	int nextImage;//where to place next image in array
 	int curImage;//which image will be rendered

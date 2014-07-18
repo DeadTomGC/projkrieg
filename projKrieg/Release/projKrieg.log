@@ -1,4 +1,4 @@
-﻿Build started 7/18/2014 10:45:47 AM.
+﻿Build started 7/18/2014 1:12:05 PM.
      1>Project "C:\Users\DeadTomGC\Documents\Visual Studio 2010\Projects\projkrieg\projKrieg\projKrieg.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Release\projKrieg.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -21,4 +21,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.11
+Time Elapsed 00:00:00.88

@@ -17,6 +17,7 @@ Sprite::Sprite(){
 	angle = 0;
 	center = new SDL_Point();
 	flip = SDL_FLIP_NONE;
+	x=y=0;
 }
 
 Sprite* Sprite::loadSprite(std::string bmp,int imageCount){
@@ -410,43 +411,52 @@ Parr* Sprite::rectCol(Sprite* obj){//doesn't check verticies or for angled colli
 	}
 }
 
-bool Sprite::autoCol(Sprite* obj){
+ColState Sprite::autoCol(Sprite* obj){
 	Parr* points;
+	ColState state;
 	points = rectCol(obj);
 	if(points == NULL){
-		return false;
+		return NONE;
 	}else if(points->pointC>=2){
 		Point center(obj->dstrect->x+(obj->dstrect->w)/2,obj->dstrect->y+(obj->dstrect->h)/2);
 
 		if(points->arr[0]->x==points->arr[1]->x){
 			if(points->arr[0]->x>center.x){
 				moveTo(obj->dstrect->x+obj->dstrect->w+1,Y());
+				state=OBJ_LEFT;
 			}else{
 				moveTo(obj->dstrect->x-dstrect->w-1,Y());
+				state=OBJ_RIGHT;
 			}
 		}else if(points->arr[0]->y==points->arr[1]->y){
 			if(points->arr[0]->y>center.y){
 				moveTo(X(),obj->dstrect->y+obj->dstrect->h+1);
+				state=OBJ_UP;
 			}else{
 				moveTo(X(),obj->dstrect->y-dstrect->h-1);
+				state=OBJ_DOWN;
 			}
 		}else if(abs(points->arr[0]->x-points->arr[1]->x) >= abs(points->arr[0]->y - points->arr[1]->y)){
 			if((points->arr[0]->y+points->arr[1]->y)/2>center.y){
 				moveTo(X(),obj->dstrect->y+obj->dstrect->h+1);
+				state=OBJ_UP;
 			}else{
 				moveTo(X(),obj->dstrect->y-dstrect->h-1);
+				state=OBJ_DOWN;
 			}
 		}else{
 			if((points->arr[0]->x+points->arr[1]->x)/2>center.x){
 				moveTo(obj->dstrect->x+obj->dstrect->w+1,Y());
+				state=OBJ_LEFT;
 			}else{
 				moveTo(obj->dstrect->x-dstrect->w-1,Y());
+				state=OBJ_RIGHT;
 			}
 		}
 		delete points;
-		return true;
+		return state;
 	}else{
 		delete points;
-		return false;
+		return NONE;
 	}
 }
