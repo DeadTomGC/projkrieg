@@ -1,5 +1,6 @@
 #include "Sprite.h"
 #include "SDL.h"
+//#include <vld.h>
 
 bool running=true;
 int main(int argc, char *argv[]){

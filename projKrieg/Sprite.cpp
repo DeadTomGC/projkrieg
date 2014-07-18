@@ -1,6 +1,6 @@
 #include "Sprite.h"
 #include "SDL.h"
-
+//#include <vld.h>
 
 Sprite::PriList* Sprite::zero=NULL;
 SDL_Renderer* Sprite::defaultRenderer=NULL;
@@ -238,11 +238,12 @@ void Sprite::renderSprites(){
 		currentL=currentL->nextHigher;
 	}
 	RenderLink* current = temp;
+	RenderLink* del;
 	while(current!=NULL){//render all frames
 		SDL_RenderPresent(current->rend);
+		del = current;
 		current = current->next;
-		temp = current;
-		delete temp;
+		delete del;
 	}
 }
 

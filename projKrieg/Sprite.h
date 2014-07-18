@@ -2,7 +2,7 @@
 #include <string>
 #include "SDL.h"
 #include "utils.h"
-
+//#include <vld.h>
 
 struct Image{
 	SDL_Surface* surface;
