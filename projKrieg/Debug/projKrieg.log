@@ -1,24 +1,26 @@
-﻿Build started 7/17/2014 9:28:06 PM.
-     1>Project "C:\Users\DeadTomGC1\documents\visual studio 2010\Projects\projKrieg\projKrieg\projKrieg.vcxproj" on node 2 (build target(s)).
+﻿Build started 7/18/2014 10:45:33 AM.
+     1>Project "C:\Users\DeadTomGC\Documents\Visual Studio 2010\Projects\projkrieg\projKrieg\projKrieg.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\projKrieg.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Sprite.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp Sprite.cpp utils.cpp
+         utils.cpp
          Sprite.cpp
+         main.cpp
+         Generating Code...
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\DeadTomGC1\documents\visual studio 2010\Projects\projKrieg\Debug\projKrieg.exe" /NOLOGO SDL2test.lib SDL2main.lib SDL2.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\projKrieg.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\DeadTomGC1\documents\visual studio 2010\Projects\projKrieg\Debug\projKrieg.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\DeadTomGC1\documents\visual studio 2010\Projects\projKrieg\Debug\projKrieg.lib" /MACHINE:X86 Debug\main.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\DeadTomGC\Documents\Visual Studio 2010\Projects\projkrieg\Debug\projKrieg.exe" /NOLOGO SDL2test.lib SDL2main.lib SDL2.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\projKrieg.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\DeadTomGC\Documents\Visual Studio 2010\Projects\projkrieg\Debug\projKrieg.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\DeadTomGC\Documents\Visual Studio 2010\Projects\projkrieg\Debug\projKrieg.lib" /MACHINE:X86 Debug\main.obj
          Debug\Sprite.obj
          Debug\utils.obj
-         LINK : C:\Users\DeadTomGC1\documents\visual studio 2010\Projects\projKrieg\Debug\projKrieg.exe not found or not built by the last incremental link; performing full link
      1>MSVCRTD.lib(cinitexe.obj) : warning LNK4098: defaultlib 'msvcrt.lib' conflicts with use of other libs; use /NODEFAULTLIB:library
-         projKrieg.vcxproj -> C:\Users\DeadTomGC1\documents\visual studio 2010\Projects\projKrieg\Debug\projKrieg.exe
+         projKrieg.vcxproj -> C:\Users\DeadTomGC\Documents\Visual Studio 2010\Projects\projkrieg\Debug\projKrieg.exe
        Manifest:
-         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\DeadTomGC1\documents\visual studio 2010\Projects\projKrieg\Debug\projKrieg.exe;#1" /manifest Debug\projKrieg.exe.intermediate.manifest
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\DeadTomGC\Documents\Visual Studio 2010\Projects\projkrieg\Debug\projKrieg.exe;#1" /manifest Debug\projKrieg.exe.intermediate.manifest
        FinalizeBuildStatus:
          Deleting file "Debug\projKrieg.unsuccessfulbuild".
          Touching "Debug\projKrieg.lastbuildstate".
-     1>Done Building Project "C:\Users\DeadTomGC1\documents\visual studio 2010\Projects\projKrieg\projKrieg\projKrieg.vcxproj" (build target(s)).
+     1>Done Building Project "C:\Users\DeadTomGC\Documents\Visual Studio 2010\Projects\projkrieg\projKrieg\projKrieg.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.43
+Time Elapsed 00:00:05.18
