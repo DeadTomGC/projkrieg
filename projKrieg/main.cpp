@@ -6,7 +6,7 @@ bool running=true;
 int main(int argc, char *argv[]){
 	const Uint8 * m_keystate;
 	int nkeys = 0;
-
+	double topspeed = 5;
 	double speedx,speedy;
 
 	SDL_Init(SDL_INIT_VIDEO);
@@ -35,17 +35,19 @@ int main(int argc, char *argv[]){
 		if(m_keystate[SDL_SCANCODE_ESCAPE]==1){
 			running=false;
 		}
-		if(m_keystate[SDL_SCANCODE_A]==1){
-			speedx-=0.07;
-		}
-		if(m_keystate[SDL_SCANCODE_W]==1){
-			speedy-=0.07;
-		}
-		if(m_keystate[SDL_SCANCODE_D]==1){
-			speedx+=0.07;
-		}
-		if(m_keystate[SDL_SCANCODE_S]==1){
-			speedy+=0.07;
+		if(abs(sqrt(speedx*speedx+speedy*speedy))<topspeed){
+			if(m_keystate[SDL_SCANCODE_A]==1){
+				speedx-=0.3;
+			}
+			if(m_keystate[SDL_SCANCODE_W]==1){
+				speedy-=0.3;
+			}
+			if(m_keystate[SDL_SCANCODE_D]==1){
+				speedx+=0.3;
+			}
+			if(m_keystate[SDL_SCANCODE_S]==1){
+				speedy+=0.3;
+			}
 		}
 		if(m_keystate[SDL_SCANCODE_Q]==1){
 			mysprite->setAngle(mysprite->getAngle()-5);
@@ -59,8 +61,22 @@ int main(int argc, char *argv[]){
 			mysprite->setImage(0);
 		}
 
-		speedx = speedx - speedx/100;
-		speedy = speedy - speedy/100;
+		if(speedx<0){
+			speedx+=0.15;
+		}else if(speedx>0){
+			speedx-=0.15;
+		}
+		if(speedy<0){
+			speedy+=0.15;
+		}else if(speedy>0){
+			speedy-=0.15;
+		}
+		if(abs(speedx)<0.15){
+			speedx=0;
+		}
+		if(abs(speedy)<0.15){
+			speedy=0;
+		}
 		mysprite->moveTo(mysprite->X()+speedx,mysprite->Y()+speedy);
 
 		ColState state=mysprite->autoCol(sprite3);
