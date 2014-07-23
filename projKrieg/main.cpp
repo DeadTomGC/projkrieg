@@ -38,15 +38,43 @@ int main(int argc, char *argv[]){
 		if(abs(sqrt(speedx*speedx+speedy*speedy))<topspeed){
 			if(m_keystate[SDL_SCANCODE_A]==1){
 				speedx-=0.3;
+				if(abs(speedy)>abs(speedx)){
+					if(speedy<0){
+						speedy+=0.15;
+					}else if(speedy>0){
+						speedy-=0.15;
+					}
+				}
 			}
 			if(m_keystate[SDL_SCANCODE_W]==1){
 				speedy-=0.3;
+				if(abs(speedx)>abs(speedy)){
+					if(speedx<0){
+						speedx+=0.15;
+					}else if(speedx>0){
+						speedx-=0.15;
+					}
+				}
 			}
 			if(m_keystate[SDL_SCANCODE_D]==1){
 				speedx+=0.3;
+				if(abs(speedy)>abs(speedx)){
+					if(speedy<0){
+						speedy+=0.15;
+					}else if(speedy>0){
+						speedy-=0.15;
+					}
+				}
 			}
 			if(m_keystate[SDL_SCANCODE_S]==1){
 				speedy+=0.3;
+				if(abs(speedx)>abs(speedy)){
+					if(speedx<0){
+						speedx+=0.15;
+					}else if(speedx>0){
+						speedx-=0.15;
+					}
+				}
 			}
 		}
 		if(m_keystate[SDL_SCANCODE_Q]==1){
