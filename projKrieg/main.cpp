@@ -1,5 +1,6 @@
 #include "Sprite.h"
 #include "SDL.h"
+
 //#include <vld.h>
 
 bool running=true;
@@ -7,6 +8,7 @@ int main(int argc, char *argv[]){
 	const Uint8 * m_keystate;
 	int nkeys = 0;
 	double topspeed = 5;
+	double accel = 0.3;
 	double speedx,speedy;
 
 	SDL_Init(SDL_INIT_VIDEO);
@@ -35,48 +37,50 @@ int main(int argc, char *argv[]){
 		if(m_keystate[SDL_SCANCODE_ESCAPE]==1){
 			running=false;
 		}
-		if(abs(sqrt(speedx*speedx+speedy*speedy))<topspeed){
+		if(sqrt(speedx*speedx+speedy*speedy)<topspeed){
 			if(m_keystate[SDL_SCANCODE_A]==1){
-				speedx-=0.3;
+				
+				speedx-=accel;
 				if(abs(speedy)>abs(speedx)){
-					if(speedy<0){
-						speedy+=0.15;
-					}else if(speedy>0){
-						speedy-=0.15;
+					if(m_keystate[SDL_SCANCODE_W]==1){
+						speedy+=accel;
+					}else if(m_keystate[SDL_SCANCODE_S]==1){
+						speedy-=accel;
 					}
 				}
 			}
 			if(m_keystate[SDL_SCANCODE_W]==1){
-				speedy-=0.3;
+				speedy-=accel;
 				if(abs(speedx)>abs(speedy)){
-					if(speedx<0){
-						speedx+=0.15;
-					}else if(speedx>0){
-						speedx-=0.15;
+					if(m_keystate[SDL_SCANCODE_A]==1){
+						speedx+=accel;
+					}else if(m_keystate[SDL_SCANCODE_D]==1){
+						speedx-=accel;
 					}
 				}
 			}
 			if(m_keystate[SDL_SCANCODE_D]==1){
-				speedx+=0.3;
+				speedx+=accel;
 				if(abs(speedy)>abs(speedx)){
-					if(speedy<0){
-						speedy+=0.15;
-					}else if(speedy>0){
-						speedy-=0.15;
+					if(m_keystate[SDL_SCANCODE_W]==1){
+						speedy+=accel;
+					}else if(m_keystate[SDL_SCANCODE_S]==1){
+						speedy-=accel;
 					}
 				}
 			}
 			if(m_keystate[SDL_SCANCODE_S]==1){
-				speedy+=0.3;
+				speedy+=accel;
 				if(abs(speedx)>abs(speedy)){
-					if(speedx<0){
-						speedx+=0.15;
-					}else if(speedx>0){
-						speedx-=0.15;
+					if(m_keystate[SDL_SCANCODE_A]==1){
+						speedx+=accel;
+					}else if(m_keystate[SDL_SCANCODE_D]==1){
+						speedx-=accel;
 					}
 				}
 			}
 		}
+		//std::cerr<<sqrt(speedx*speedx+speedy*speedy)<<std::endl;
 		if(m_keystate[SDL_SCANCODE_Q]==1){
 			mysprite->setAngle(mysprite->getAngle()-5);
 		}

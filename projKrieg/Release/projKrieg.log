@@ -1,4 +1,4 @@
-﻿Build started 7/22/2014 10:24:33 PM.
+﻿Build started 7/23/2014 8:43:28 PM.
      1>Project "C:\Users\DeadTomGC1\documents\visual studio 2010\Projects\projKrieg\projKrieg\projKrieg.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Release\projKrieg.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -10,8 +10,8 @@
          Release\Sprite.obj
          Release\utils.obj
          Generating code
-     1>c:\users\deadtomgc1\documents\visual studio 2010\projects\projkrieg\projkrieg\main.cpp(38): warning C4700: uninitialized local variable 'speedy' used
-     1>c:\users\deadtomgc1\documents\visual studio 2010\projects\projkrieg\projkrieg\main.cpp(38): warning C4700: uninitialized local variable 'speedx' used
+     1>c:\users\deadtomgc1\documents\visual studio 2010\projects\projkrieg\projkrieg\main.cpp(40): warning C4700: uninitialized local variable 'speedx' used
+     1>c:\users\deadtomgc1\documents\visual studio 2010\projects\projkrieg\projkrieg\main.cpp(40): warning C4700: uninitialized local variable 'speedy' used
          Finished generating code
          projKrieg.vcxproj -> C:\Users\DeadTomGC1\documents\visual studio 2010\Projects\projKrieg\Release\projKrieg.exe
        Manifest:
@@ -23,4 +23,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.83
+Time Elapsed 00:00:00.84
