@@ -10,6 +10,7 @@ struct Image{
 	SDL_Renderer* renderer;
 };
 
+
 enum ColState{
 	NONE,
 	OBJ_LEFT,
@@ -48,19 +49,29 @@ public:
 	void stopAnim(){animate = false;curImage=startF;}
 	void contAnim(){animate = true;}
 
+
+	void setRelative(Sprite* host);
+	void disableRelative();
+
 	void setAnimationFPF(int fpf){this->fpf=fpf;}
 	void setRotCenter(int x,int y){center->x=x,center->y=y;}
 	int rotCentX(){return center->x;}
 	int rotCentY(){return center->y;}
 	double getAngle(){return angle;}
-	void setAngle(double angle){this->angle=angle;}
+	void setAngle(double angle);
 	double X(void){return x;}
 	double Y(void){return y;}
-	void moveTo(double x,double y){this->x=x;this->y=y;dstrect->x=(int)x;dstrect->y=(int)y;}
+	void moveTo(double x,double y);
 	void sizeTo(int w,int h){dstrect->w=w;dstrect->h=h;center->x=w/2;center->y=h/2;}
 	void setVisible(bool vis){this->vis=vis;}
 protected:
 	//classes:
+	class SpriteCont{
+	public:
+		SpriteCont(){next=NULL;sprite=NULL;}
+		SpriteCont* next;
+		Sprite* sprite;
+	};
 	class PriList{//used as a single priority (keeps all sprites at this level)
 	public:
 		PriList(){
@@ -101,8 +112,9 @@ protected:
 	SDL_RendererFlip flip;//what flip mode
 	SDL_Renderer* renderer;//which renderer to render with
 	Image** images;//array of image pointers
-	Sprite *next,*prev;//the next and previous sprite in the PriList
+	Sprite *next,*prev,*host;//the next and previous sprite in the PriList
 	PriList* priList;//priList that the sprite is linked to
+	SpriteCont* relFirst; //the first in a list of sprites that are to be positioned relative to this one.
 	bool vis;
 private:
 	//helper that clears the current sprite from the render list

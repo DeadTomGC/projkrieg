@@ -35,6 +35,7 @@ int main(int argc, char *argv[]){
 	mysprite->setAnimationFPF(20);
 	mysprite->setAnimationFrames(0,1);
 	mysprite->loopAnim();
+	sprite3->setRelative(mysprite);
 	while(running){
 		SDL_PumpEvents();
 		if(m_keystate[SDL_SCANCODE_ESCAPE]==1){

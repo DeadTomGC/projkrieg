@@ -7,8 +7,10 @@ SDL_Renderer* Sprite::defaultRenderer=NULL;
 
 Sprite::Sprite(){
 	renderer=defaultRenderer;
+	host = NULL;
 	curImage=0;
 	fpf=1;
+	relFirst = NULL;
 	frameCounter = 0;
 	animate = false;
 	loop = false;
@@ -481,5 +483,61 @@ void Sprite::animUD(){
 					animate=false;
 			}
 		}
+	}
+}
+
+void Sprite::moveTo(double x,double y){
+	double diffx,diffy;
+	diffx=X()-x;
+	diffy=Y()-y;
+	this->x=x;this->y=y;dstrect->x=(int)x;dstrect->y=(int)y;
+	SpriteCont* temp = relFirst;
+	while(temp!=NULL){
+		temp->sprite->moveTo(temp->sprite->X()-diffx,temp->sprite->Y()-diffy);
+		temp=temp->next;
+
+	}
+	
+}
+
+void Sprite::setRelative(Sprite* host){
+	this->disableRelative();
+	if(host!=NULL){
+		SpriteCont* temp;
+		temp=host->relFirst;
+		host->relFirst=new SpriteCont();
+		host->relFirst->next=temp;
+		host->relFirst->sprite=this;
+		this->host=host;
+	}
+}
+void Sprite::disableRelative(){
+	if(host!=NULL){
+		SpriteCont* temp,*prev;
+		temp=host->relFirst;
+		prev=NULL;
+		while(temp->sprite!=this){
+			prev=temp;
+			temp=temp->next;
+		}
+		if(prev==NULL){
+			host->relFirst=temp->next;
+			delete temp;
+		}else{
+			prev->next=temp->next;
+			delete temp;
+		}
+	}
+	host=NULL;
+}
+
+void Sprite::setAngle(double angle){
+	double diff = this->angle-angle;
+	this->angle=angle;
+	SpriteCont* temp = relFirst;
+	while(temp!=NULL){
+		temp->sprite->setAngle(temp->sprite->getAngle()-diff);
+		temp=temp->next;
+
 	}
 }

@@ -15,7 +15,7 @@ flipping
 color keys
 
 TODO:
-add rotation point manipulation
+add rotation point manipulation //done!
 add srcrect manipulation//delayed because who the fuck uses it?
-add animation support
-add relative movement
+add animation support //done ish
+add relative movement //oops
