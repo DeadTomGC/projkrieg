@@ -500,7 +500,7 @@ void Sprite::moveTo(double x,double y){
 	
 }
 
-void Sprite::setRelative(Sprite* host){
+void Sprite::setRelative(Sprite* host,bool sameRotCenter){
 	this->disableRelative();
 	if(host!=NULL){
 		SpriteCont* temp;
@@ -509,6 +509,9 @@ void Sprite::setRelative(Sprite* host){
 		host->relFirst->next=temp;
 		host->relFirst->sprite=this;
 		this->host=host;
+		if(sameRotCenter){
+			this->setRotCenter((int)(host->rotCentX()+(host->X()-x)),(int)(host->rotCentY()+(host->Y()-y)));
+		}
 	}
 }
 void Sprite::disableRelative(){

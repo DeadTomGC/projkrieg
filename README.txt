@@ -18,4 +18,4 @@ TODO:
 add rotation point manipulation //done!
 add srcrect manipulation//delayed because who the fuck uses it?
 add animation support //done ish
-add relative movement //oops
+add relative movement //kinda done

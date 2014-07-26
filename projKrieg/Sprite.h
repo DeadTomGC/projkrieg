@@ -50,7 +50,7 @@ public:
 	void contAnim(){animate = true;}
 
 
-	void setRelative(Sprite* host);
+	void setRelative(Sprite* host,bool sameRotCenter=false);
 	void disableRelative();
 
 	void setAnimationFPF(int fpf){this->fpf=fpf;}
@@ -64,6 +64,7 @@ public:
 	void moveTo(double x,double y);
 	void sizeTo(int w,int h){dstrect->w=w;dstrect->h=h;center->x=w/2;center->y=h/2;}
 	void setVisible(bool vis){this->vis=vis;}
+	bool isVisible(){return vis;}
 protected:
 	//classes:
 	class SpriteCont{

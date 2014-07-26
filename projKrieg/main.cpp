@@ -29,13 +29,13 @@ int main(int argc, char *argv[]){
 	SDL_GetKeyboardState(&nkeys);
 	m_keystate = SDL_GetKeyboardState(0);
 	mysprite->moveTo(400,300);
-	sprite3->moveTo(100,100);
+	sprite3->moveTo(200,200);
 	sprite3->sizeTo(50,70);
 	mysprite->sizeTo(50,70);
 	mysprite->setAnimationFPF(20);
 	mysprite->setAnimationFrames(0,1);
 	mysprite->loopAnim();
-	sprite3->setRelative(mysprite);
+	sprite3->setRelative(mysprite,true);
 	while(running){
 		SDL_PumpEvents();
 		if(m_keystate[SDL_SCANCODE_ESCAPE]==1){
