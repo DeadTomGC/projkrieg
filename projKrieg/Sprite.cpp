@@ -8,6 +8,12 @@ SDL_Renderer* Sprite::defaultRenderer=NULL;
 Sprite::Sprite(){
 	renderer=defaultRenderer;
 	curImage=0;
+	fpf=1;
+	frameCounter = 0;
+	animate = false;
+	loop = false;
+	startF=0;
+	endF=0;
 	next=NULL;
 	prev=NULL;
 	priList=NULL;
@@ -214,6 +220,7 @@ void Sprite::renderSprites(){
 		currentS=currentL->next;
 		while(currentS!=NULL){
 			if(currentS->vis){
+				currentS->animUD();
 				SDL_RenderCopyEx(currentS->renderer, currentS->images[currentS->curImage]->texture, currentS->srcrect, currentS->dstrect,currentS->angle,currentS->center,currentS->flip); //add textures to the appropriate renderers.
 				if(temp==NULL){
 					temp = new RenderLink();
@@ -300,7 +307,8 @@ Sprite* Sprite::cloneSprite(Sprite* original){
 			temp->srcrect->x=original->srcrect->x;
 			temp->srcrect->y=original->srcrect->y;
 		}
-		
+		temp->center->x=original->center->x;
+		temp->center->y=original->center->y;
 		Sprite* temp2;
 		temp2=zero->next;
 		zero->next=temp;
@@ -458,5 +466,20 @@ ColState Sprite::autoCol(Sprite* obj){
 	}else{
 		delete points;
 		return NONE;
+	}
+}
+
+void Sprite::animUD(){
+	if(animate){
+		frameCounter++;
+		if(frameCounter>=fpf){
+			frameCounter=0;
+			curImage++;
+			if(curImage>endF){
+				curImage=startF;
+				if(!loop)
+					animate=false;
+			}
+		}
 	}
 }

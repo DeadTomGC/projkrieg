@@ -9,6 +9,7 @@ struct Image{
 	SDL_Texture* texture;
 	SDL_Renderer* renderer;
 };
+
 enum ColState{
 	NONE,
 	OBJ_LEFT,
@@ -38,7 +39,19 @@ public:
 	void setPriority(int pri);
 	Parr* rectCol(Sprite* obj);//IMPORTANT!!! DELETE THE Parr* AFTER USE!!!!
 	ColState autoCol(Sprite* obj);
+	
+	void setAnimationFrames(int start,int end){startF=start;endF=end;}
+	
+	void playAnim(){animate = true;loop = false;frameCounter=0;curImage=startF;}
+	void loopAnim(){animate = true;loop = true;frameCounter=0;curImage=startF;}
+	void pauseAnim(){animate = false;}
+	void stopAnim(){animate = false;curImage=startF;}
+	void contAnim(){animate = true;}
 
+	void setAnimationFPF(int fpf){this->fpf=fpf;}
+	void setRotCenter(int x,int y){center->x=x,center->y=y;}
+	int rotCentX(){return center->x;}
+	int rotCentY(){return center->y;}
 	double getAngle(){return angle;}
 	void setAngle(double angle){this->angle=angle;}
 	double X(void){return x;}
@@ -68,12 +81,18 @@ protected:
 		RenderLink* next;
 		SDL_Renderer* rend;
 	};
+
+	void animUD();//updates animations
 	//static vars:
 	static PriList* zero;//the lowest priority that starts at 0 but may not remain there
 	static SDL_Renderer* defaultRenderer;//the default renderer
 	//non-static vars:
 	SDL_Rect *dstrect,*srcrect;//destination rectangle and source rectanlge
 	double x,y;
+	bool animate,loop; //animate?
+	int startF,endF; //set the image number to start on and the image number to end on
+	int frameCounter; //used to keep track of passed frames
+	int fpf; // the number of frames per frame
 	int imageCount;//max images
 	int nextImage;//where to place next image in array
 	int curImage;//which image will be rendered

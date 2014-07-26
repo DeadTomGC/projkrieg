@@ -9,7 +9,7 @@ int main(int argc, char *argv[]){
 	int nkeys = 0;
 	double topspeed = 5;
 	double accel = 0.3;
-	double speedx,speedy;
+	double speedx=0,speedy=0;
 
 	SDL_Init(SDL_INIT_VIDEO);
 	SDL_Window* screen = SDL_CreateWindow( "projKrieg",100,100,640, 480, SDL_WINDOW_OPENGL );
@@ -32,6 +32,9 @@ int main(int argc, char *argv[]){
 	sprite3->moveTo(100,100);
 	sprite3->sizeTo(50,70);
 	mysprite->sizeTo(50,70);
+	mysprite->setAnimationFPF(20);
+	mysprite->setAnimationFrames(0,1);
+	mysprite->loopAnim();
 	while(running){
 		SDL_PumpEvents();
 		if(m_keystate[SDL_SCANCODE_ESCAPE]==1){
@@ -87,11 +90,7 @@ int main(int argc, char *argv[]){
 		if(m_keystate[SDL_SCANCODE_E]==1){
 			mysprite->setAngle(mysprite->getAngle()+5);
 		}
-		if(m_keystate[SDL_SCANCODE_SPACE]==1){
-			mysprite->setImage(1);
-		}else{
-			mysprite->setImage(0);
-		}
+		
 
 		if(speedx<0){
 			speedx+=0.15;

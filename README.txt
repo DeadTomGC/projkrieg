@@ -13,3 +13,9 @@ collisions
 automatic Collision compensation
 flipping
 color keys
+
+TODO:
+add rotation point manipulation
+add srcrect manipulation//delayed because who the fuck uses it?
+add animation support
+add relative movement
