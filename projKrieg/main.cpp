@@ -16,12 +16,20 @@ int main(int argc, char *argv[]){
 	SDL_Renderer* renderer = SDL_CreateRenderer(screen, -1, SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_ACCELERATED);
 
 	Sprite::setDefaultRenderer(renderer);
-	Sprite* mysprite = Sprite::loadSprite("humanity.bmp",2);
-	mysprite->addImage("humanity2.bmp");
-	mysprite->setImageColorKey(0,true,0,0,0,1);
-	mysprite->setImageColorKey(1,true,0,0,0,1);
+	Sprite* mysprite = Sprite::loadSprite("h1.bmp",10);
+	mysprite->addImage("h2.bmp");
+	mysprite->addImage("h3.bmp");
+	mysprite->addImage("h4.bmp");
+	mysprite->addImage("h5.bmp");
+	mysprite->addImage("h6.bmp");
+	mysprite->addImage("h7.bmp");
+	mysprite->addImage("h8.bmp");
+	mysprite->addImage("h9.bmp");
+	mysprite->addImage("h10.bmp");
+	mysprite->setImageColorKey(-1,true,0,0,0,1);
 	Sprite* sprite2 = Sprite::loadSprite("back.bmp");
-	Sprite* sprite3 = Sprite::cloneSprite(mysprite);
+	Sprite* sprite3 = Sprite::loadSprite("humanity.bmp",1);
+	sprite3->setImageColorKey(0,true,0,0,0,1);
 	sprite3->setPriority(1);
 	sprite3->sizeTo(200,300);
 	sprite2->sizeTo(640,480);
@@ -31,9 +39,9 @@ int main(int argc, char *argv[]){
 	mysprite->moveTo(400,300);
 	sprite3->moveTo(200,200);
 	sprite3->sizeTo(50,70);
-	mysprite->sizeTo(50,70);
-	mysprite->setAnimationFPF(20);
-	mysprite->setAnimationFrames(0,1);
+	mysprite->sizeTo(100,200);
+	mysprite->setAnimationFPF(6);
+	mysprite->setAnimationFrames(0,9);
 	mysprite->loopAnim();
 	sprite3->setRelative(mysprite,true);
 	while(running){

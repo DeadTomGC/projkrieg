@@ -145,17 +145,33 @@ Sprite* Sprite::makeSprite(Image* img,int imageCount){
 void Sprite::setImageColorKey(int image,bool flag,Uint8 R,Uint8 G,Uint8 B,bool unshared){ //sets color key for image in sprite
 	
 
+	if(image<0){
+		for(image=0;image<nextImage;image++){
+			if(flag){
+				SDL_SetColorKey(images[image]->surface,SDL_TRUE,SDL_MapRGB(images[image]->surface->format,R,G,B));
+			}else{
+				SDL_SetColorKey(images[image]->surface,SDL_FALSE,SDL_MapRGB(images[image]->surface->format,R,G,B));
+			}
+
+			//hmm should we delete the old texture?
+			if(unshared){
+				SDL_DestroyTexture(images[image]->texture);
+			}
+			images[image]->texture = SDL_CreateTextureFromSurface(renderer,images[image]->surface);
+		}
+	}else{
 		if(flag){
-			SDL_SetColorKey(images[image]->surface,SDL_TRUE,SDL_MapRGB(images[image]->surface->format,R,G,B));
-		}else{
-			SDL_SetColorKey(images[image]->surface,SDL_FALSE,SDL_MapRGB(images[image]->surface->format,R,G,B));
-		}
-		
-		//hmm should we delete the old texture?
-		if(unshared){
-			SDL_DestroyTexture(images[image]->texture);
-		}
-		images[image]->texture = SDL_CreateTextureFromSurface(renderer,images[image]->surface);
+				SDL_SetColorKey(images[image]->surface,SDL_TRUE,SDL_MapRGB(images[image]->surface->format,R,G,B));
+			}else{
+				SDL_SetColorKey(images[image]->surface,SDL_FALSE,SDL_MapRGB(images[image]->surface->format,R,G,B));
+			}
+
+			//hmm should we delete the old texture?
+			if(unshared){
+				SDL_DestroyTexture(images[image]->texture);
+			}
+			images[image]->texture = SDL_CreateTextureFromSurface(renderer,images[image]->surface);
+	}
 }
 
 void Sprite::setPriority(int pri){

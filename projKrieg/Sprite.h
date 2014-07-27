@@ -36,7 +36,7 @@ public:
 	void addImage(std::string bmp);
 	void addImage(Image* img);
 	Image* getImage(int i){return images[i];}
-	void setImageColorKey(int sprite,bool flag,Uint8 R,Uint8 G,Uint8 B,bool unshared=false);
+	void setImageColorKey(int sprite,bool flag,Uint8 R,Uint8 G,Uint8 B,bool unshared=false);//a negitive sprite index will set all the color keys
 	void setPriority(int pri);
 	Parr* rectCol(Sprite* obj);//IMPORTANT!!! DELETE THE Parr* AFTER USE!!!!
 	ColState autoCol(Sprite* obj);
