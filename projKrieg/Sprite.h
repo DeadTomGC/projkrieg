@@ -4,10 +4,29 @@
 #include "utils.h"
 //#include <vld.h>
 
+class Surface{ //a container that allows references to be counted s is the actual surface
+public:
+	Surface(SDL_Surface* surface){s=surface;count=1;user=false;}
+	SDL_Surface* s;
+	int count;
+	bool user;
+	~Surface(){SDL_FreeSurface(s);}
+};
+class Texture{ //a container that allows references to be counted t is the actual texture
+public:
+	Texture(SDL_Texture* texture){t=texture;count=1;user=false;}
+	SDL_Texture* t;
+	int count;
+	bool user;
+	~Texture(){SDL_DestroyTexture(t);}
+};
+
+
 struct Image{
-	SDL_Surface* surface;
-	SDL_Texture* texture;
+	Surface* surface;
+	Texture* texture;
 	SDL_Renderer* renderer;
+
 };
 
 
@@ -25,6 +44,7 @@ class Sprite{
 public:
 	static void setDefaultRenderer(SDL_Renderer* renderer){defaultRenderer = renderer;}
 	static void renderSprites();
+	static Image* loadImage(std::string bmp,SDL_Renderer* renderer=defaultRenderer);
 	static Sprite* loadSprite(std::string bmp,int imageCount=1);
 	static Sprite* loadSprite(std::string bmp,SDL_Renderer* renderer,int imageCount=1);
 	static Sprite* makeSprite(Image* img,int imageCount=1);
@@ -35,12 +55,16 @@ public:
 	void setImage(int i){curImage = i;}
 	void addImage(std::string bmp);
 	void addImage(Image* img);
-	Image* getImage(int i){return images[i];}
-	void setImageColorKey(int sprite,bool flag,Uint8 R,Uint8 G,Uint8 B,bool unshared=false);//a negitive sprite index will set all the color keys
+	//Image* getImage(int i){return images[i];}
+	void setImageColorKey(int sprite,bool flag,Uint8 R,Uint8 G,Uint8 B);//a negitive sprite index will set all the color keys
 	void setPriority(int pri);
 	Parr* rectCol(Sprite* obj);//IMPORTANT!!! DELETE THE Parr* AFTER USE!!!!
 	ColState autoCol(Sprite* obj);
+	bool setAllAlpaMod(Uint8 alpha);
 	
+	void setRelative(Sprite* host,bool sameRotCenter=false);
+	void disableRelative();
+
 	void setAnimationFrames(int start,int end){startF=start;endF=end;}
 	
 	void playAnim(){animate = true;loop = false;frameCounter=0;curImage=startF;}
@@ -48,10 +72,6 @@ public:
 	void pauseAnim(){animate = false;}
 	void stopAnim(){animate = false;curImage=startF;}
 	void contAnim(){animate = true;}
-
-
-	void setRelative(Sprite* host,bool sameRotCenter=false);
-	void disableRelative();
 
 	void setAnimationFPF(int fpf){this->fpf=fpf;}
 	void setRotCenter(int x,int y){center->x=x,center->y=y;}
@@ -127,6 +147,18 @@ private:
 		}
 		if(next!=NULL)
 				next->prev=prev;
+	}
+	void decTexture(Texture* texture){
+		texture->count-=1;
+		if(texture->count==0 && texture->user==false){
+			delete texture;
+		}
+	}
+	void decSurface(Surface* surface){
+		surface->count-=1;
+		if(surface->count==0 && surface->user==false){
+			delete surface;
+		}
 	}
 	Sprite();
 	Sprite(Sprite &s);

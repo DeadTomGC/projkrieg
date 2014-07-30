@@ -28,21 +28,21 @@ Sprite::Sprite(){
 	x=y=0;
 }
 
-Sprite* Sprite::loadSprite(std::string bmp,int imageCount){
+Sprite* Sprite::loadSprite(std::string bmp,int imageCount){//good
 	if(defaultRenderer!=NULL && imageCount>0){
 		Sprite* temp = new Sprite();
 		temp->renderer=defaultRenderer;
 		temp->imageCount=imageCount;
 		temp->images=new Image*[imageCount];
 		temp->images[0] = new Image();
-		temp->images[0]->surface=SDL_LoadBMP(bmp.c_str());
-		temp->images[0]->texture=SDL_CreateTextureFromSurface(defaultRenderer,temp->images[0]->surface);
+		temp->images[0]->surface=new Surface(SDL_LoadBMP(bmp.c_str()));
+		temp->images[0]->texture=new Texture(SDL_CreateTextureFromSurface(defaultRenderer,temp->images[0]->surface->s));
 		temp->images[0]->renderer = defaultRenderer;
 		temp->dstrect = new SDL_Rect();
-		temp->dstrect->w=temp->images[0]->surface->w;
-		temp->dstrect->h=temp->images[0]->surface->h;
-		temp->center->x=temp->images[0]->surface->w/2;
-		temp->center->y=temp->images[0]->surface->h/2;
+		temp->dstrect->w=temp->images[0]->surface->s->w;
+		temp->dstrect->h=temp->images[0]->surface->s->h;
+		temp->center->x=temp->images[0]->surface->s->w/2;
+		temp->center->y=temp->images[0]->surface->s->h/2;
 		temp->dstrect->x=0;
 		temp->dstrect->y=0;
 		temp->nextImage=1;
@@ -66,21 +66,21 @@ Sprite* Sprite::loadSprite(std::string bmp,int imageCount){
 	}
 
 }
-Sprite* Sprite::loadSprite(std::string bmp,SDL_Renderer* renderer,int imageCount){
+Sprite* Sprite::loadSprite(std::string bmp,SDL_Renderer* renderer,int imageCount){//good
 	if(imageCount>0){
 		Sprite* temp = new Sprite();
 		temp->renderer=renderer;
 		temp->imageCount=imageCount;
 		temp->images=new Image*[imageCount];
 		temp->images[0] = new Image();
-		temp->images[0]->surface=SDL_LoadBMP(bmp.c_str());
-		temp->images[0]->texture=SDL_CreateTextureFromSurface(renderer,temp->images[0]->surface);
+		temp->images[0]->surface=new Surface(SDL_LoadBMP(bmp.c_str()));
+		temp->images[0]->texture=new Texture(SDL_CreateTextureFromSurface(renderer,temp->images[0]->surface->s));
 		temp->images[0]->renderer = renderer;
 		temp->dstrect = new SDL_Rect();
-		temp->dstrect->w=temp->images[0]->surface->w;
-		temp->dstrect->h=temp->images[0]->surface->h;
-		temp->center->x=temp->images[0]->surface->w/2;
-		temp->center->y=temp->images[0]->surface->h/2;
+		temp->dstrect->w=temp->images[0]->surface->s->w;
+		temp->dstrect->h=temp->images[0]->surface->s->h;
+		temp->center->x=temp->images[0]->surface->s->w/2;
+		temp->center->y=temp->images[0]->surface->s->h/2;
 		temp->dstrect->x=0;
 		temp->dstrect->y=0;
 		temp->nextImage=1;
@@ -105,18 +105,23 @@ Sprite* Sprite::loadSprite(std::string bmp,SDL_Renderer* renderer,int imageCount
 
 }
 
-Sprite* Sprite::makeSprite(Image* img,int imageCount){
-	if(defaultRenderer!=NULL && imageCount>0){
+Sprite* Sprite::makeSprite(Image* img,int imageCount){//good
+	if(img!=NULL && imageCount>0){
 		Sprite* temp = new Sprite();
 		temp->renderer=img->renderer;
 		temp->imageCount=imageCount;
 		temp->images=new Image*[imageCount];
-		temp->images[0] = img;
+		temp->images[0] = new Image();
+		temp->images[0]->renderer = img->renderer;
+		temp->images[0]->surface = img->surface;
+		temp->images[0]->texture = img->texture;
+		img->surface->count+=1;
+		img->texture->count+=1;
 		temp->dstrect = new SDL_Rect();
-		temp->dstrect->w=temp->images[0]->surface->w;
-		temp->dstrect->h=temp->images[0]->surface->h;
-		temp->center->x=temp->images[0]->surface->w/2;
-		temp->center->y=temp->images[0]->surface->h/2;
+		temp->dstrect->w=temp->images[0]->surface->s->w;
+		temp->dstrect->h=temp->images[0]->surface->s->h;
+		temp->center->x=temp->images[0]->surface->s->w/2;
+		temp->center->y=temp->images[0]->surface->s->h/2;
 		temp->dstrect->x=0;
 		temp->dstrect->y=0;
 		temp->nextImage=1;
@@ -142,39 +147,62 @@ Sprite* Sprite::makeSprite(Image* img,int imageCount){
 }
 
 
-void Sprite::setImageColorKey(int image,bool flag,Uint8 R,Uint8 G,Uint8 B,bool unshared){ //sets color key for image in sprite
-	
-
+void Sprite::setImageColorKey(int image,bool flag,Uint8 R,Uint8 G,Uint8 B){ //sets color key for image in sprite //all good assuming that images are never shared
+	Image* temp;
+	Uint32 colorKey;
+	int oldFlag;
 	if(image<0){
 		for(image=0;image<nextImage;image++){
+			temp = new Image();
+			temp->renderer=images[image]->renderer;
+			temp->surface=images[image]->surface;
+			temp->surface->count+=1;
+			oldFlag = SDL_GetColorKey(images[image]->surface->s,&colorKey);
 			if(flag){
-				SDL_SetColorKey(images[image]->surface,SDL_TRUE,SDL_MapRGB(images[image]->surface->format,R,G,B));
+				SDL_SetColorKey(images[image]->surface->s,SDL_TRUE,SDL_MapRGB(images[image]->surface->s->format,R,G,B));
 			}else{
-				SDL_SetColorKey(images[image]->surface,SDL_FALSE,SDL_MapRGB(images[image]->surface->format,R,G,B));
+				SDL_SetColorKey(images[image]->surface->s,SDL_FALSE,SDL_MapRGB(images[image]->surface->s->format,R,G,B));
 			}
-
-			//hmm should we delete the old texture?
-			if(unshared){
-				SDL_DestroyTexture(images[image]->texture);
+			temp->texture=new Texture(SDL_CreateTextureFromSurface(renderer,images[image]->surface->s));
+			if(oldFlag==0){
+				SDL_SetColorKey(images[image]->surface->s,SDL_TRUE,colorKey);
+			}else{
+				SDL_SetColorKey(images[image]->surface->s,SDL_FALSE,colorKey);
 			}
-			images[image]->texture = SDL_CreateTextureFromSurface(renderer,images[image]->surface);
+			//destroy old Image
+			decSurface(images[image]->surface);
+			decTexture(images[image]->texture);
+			delete images[image];
+			//set new image as the one to be used
+			images[image] = temp;
 		}
 	}else{
+		temp = new Image();
+		temp->renderer=images[image]->renderer;
+		temp->surface=images[image]->surface;
+		temp->surface->count+=1;
+		oldFlag = SDL_GetColorKey(images[image]->surface->s,&colorKey);
 		if(flag){
-				SDL_SetColorKey(images[image]->surface,SDL_TRUE,SDL_MapRGB(images[image]->surface->format,R,G,B));
-			}else{
-				SDL_SetColorKey(images[image]->surface,SDL_FALSE,SDL_MapRGB(images[image]->surface->format,R,G,B));
-			}
-
-			//hmm should we delete the old texture?
-			if(unshared){
-				SDL_DestroyTexture(images[image]->texture);
-			}
-			images[image]->texture = SDL_CreateTextureFromSurface(renderer,images[image]->surface);
+			SDL_SetColorKey(images[image]->surface->s,SDL_TRUE,SDL_MapRGB(images[image]->surface->s->format,R,G,B));
+		}else{
+			SDL_SetColorKey(images[image]->surface->s,SDL_FALSE,SDL_MapRGB(images[image]->surface->s->format,R,G,B));
+		}
+		temp->texture=new Texture(SDL_CreateTextureFromSurface(renderer,images[image]->surface->s));
+		if(oldFlag==0){
+			SDL_SetColorKey(images[image]->surface->s,SDL_TRUE,colorKey);
+		}else{
+			SDL_SetColorKey(images[image]->surface->s,SDL_FALSE,colorKey);
+		}
+		//destroy old Image
+		decSurface(images[image]->surface);
+		decTexture(images[image]->texture);
+		delete images[image];
+		//set new image as the one to be used
+		images[image] = temp;	
 	}
 }
 
-void Sprite::setPriority(int pri){
+void Sprite::setPriority(int pri){//good
 	PriList* current=zero;
 
 	if(pri<current->priority){
@@ -228,7 +256,7 @@ void Sprite::setPriority(int pri){
 }
 
 
-void Sprite::renderSprites(){
+void Sprite::renderSprites(){//good
 	PriList* currentL;
 	Sprite* currentS;
 	RenderLink* temp = NULL;
@@ -239,7 +267,7 @@ void Sprite::renderSprites(){
 		while(currentS!=NULL){
 			if(currentS->vis){
 				currentS->animUD();
-				SDL_RenderCopyEx(currentS->renderer, currentS->images[currentS->curImage]->texture, currentS->srcrect, currentS->dstrect,currentS->angle,currentS->center,currentS->flip); //add textures to the appropriate renderers.
+				SDL_RenderCopyEx(currentS->renderer, currentS->images[currentS->curImage]->texture->t, currentS->srcrect, currentS->dstrect,currentS->angle,currentS->center,currentS->flip); //add textures to the appropriate renderers.
 				if(temp==NULL){
 					temp = new RenderLink();
 					temp->rend=currentS->renderer;
@@ -273,42 +301,54 @@ void Sprite::renderSprites(){
 	}
 }
 
-void Sprite::addImage(std::string bmp){
+void Sprite::addImage(std::string bmp){//good
 
 	if(nextImage<imageCount){
 		images[nextImage] = new Image();
-		images[nextImage]->surface=SDL_LoadBMP(bmp.c_str());
-		images[nextImage]->texture=SDL_CreateTextureFromSurface(renderer,images[nextImage]->surface);
+		images[nextImage]->surface=new Surface(SDL_LoadBMP(bmp.c_str()));
+		images[nextImage]->texture=new Texture(SDL_CreateTextureFromSurface(renderer,images[nextImage]->surface->s));
 		images[nextImage]->renderer = renderer;
 		nextImage++;
 	}
 
 }
 
-void Sprite::addImage(Image* img){
+void Sprite::addImage(Image* img){//good
 
 	if(nextImage<imageCount){
 		if(img->renderer!=renderer){
 			images[nextImage] = new Image();
 			images[nextImage]->renderer = renderer;
 			images[nextImage]->surface = img->surface;
-			images[nextImage]->texture=SDL_CreateTextureFromSurface(renderer,images[nextImage]->surface);
+			images[nextImage]->surface->count+=1;
+			images[nextImage]->texture=new Texture(SDL_CreateTextureFromSurface(renderer,images[nextImage]->surface->s));
 		}else{
 			images[nextImage] = img;
+			images[nextImage] = new Image();
+			images[nextImage]->renderer = renderer;
+			images[nextImage]->surface = img->surface;
+			images[nextImage]->texture = img->texture;
+			img->surface->count+=1;
+			img->texture->count+=1;
 		}
 		nextImage++;
 	}
 
 }
 
-Sprite* Sprite::cloneSprite(Sprite* original){
+Sprite* Sprite::cloneSprite(Sprite* original){//good
 	if(original!=NULL){
 		Sprite* temp = new Sprite();
 		temp->renderer=original->renderer;
 		temp->imageCount=original->imageCount;
 		temp->images=new Image*[original->imageCount];
 		for(int i=0;i<original->imageCount;i++){
-			temp->images[i]=original->images[i];
+			temp->images[i]=new Image();
+			temp->images[i]->renderer=original->images[i]->renderer;
+			temp->images[i]->surface=original->images[i]->surface;
+			temp->images[i]->texture=original->images[i]->texture;
+			temp->images[i]->surface->count+=1;
+			temp->images[i]->texture->count+=1;
 		}
 		temp->nextImage=original->nextImage;
 
@@ -342,7 +382,7 @@ Sprite* Sprite::cloneSprite(Sprite* original){
 }
 
 
-Sprite* Sprite::cloneSprite(Sprite* original,SDL_Renderer* renderer){
+Sprite* Sprite::cloneSprite(Sprite* original,SDL_Renderer* renderer){//good
 	if(original!=NULL){
 		Sprite* temp = new Sprite();
 		temp->renderer=renderer;
@@ -352,7 +392,8 @@ Sprite* Sprite::cloneSprite(Sprite* original,SDL_Renderer* renderer){
 			temp->images[i]=new Image();
 			temp->images[i]->renderer=renderer;
 			temp->images[i]->surface=original->images[i]->surface;
-			temp->images[i]->texture=SDL_CreateTextureFromSurface(renderer,temp->images[i]->surface);
+			temp->images[i]->surface->count+=1;
+			temp->images[i]->texture=new Texture(SDL_CreateTextureFromSurface(renderer,temp->images[i]->surface->s));
 		}
 		temp->nextImage=original->nextImage;
 
@@ -385,15 +426,15 @@ Sprite* Sprite::cloneSprite(Sprite* original,SDL_Renderer* renderer){
 }
 
 
-void Sprite::deleteSprite(Sprite* sprite,bool deleteResources){
+void Sprite::deleteSprite(Sprite* sprite,bool deleteResources){//bad
 	if(!deleteResources){
 		sprite->clearFromList();
 		delete sprite;
 	}else{
 		sprite->clearFromList();
 		for(int i=0;i<sprite->nextImage;i++){//we don't delete renderers...
-			SDL_FreeSurface(sprite->images[i]->surface);
-			SDL_DestroyTexture(sprite->images[i]->texture);
+			SDL_FreeSurface(sprite->images[i]->surface->s);
+			SDL_DestroyTexture(sprite->images[i]->texture->t);
 			delete (sprite->images[i]);
 		}
 		delete sprite;
@@ -401,7 +442,7 @@ void Sprite::deleteSprite(Sprite* sprite,bool deleteResources){
 
 }
 
-Parr* Sprite::rectCol(Sprite* obj){//doesn't check verticies or for angled collisions
+Parr* Sprite::rectCol(Sprite* obj){//doesn't check verticies or for angled collisions //good
 	Parr* inters=new Parr();       //IMPORTANT!!! DELETE THE Parr* AFTER USE!!!!
 	Point* temp;
 	if(temp=intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y))){
@@ -437,7 +478,7 @@ Parr* Sprite::rectCol(Sprite* obj){//doesn't check verticies or for angled colli
 	}
 }
 
-ColState Sprite::autoCol(Sprite* obj){
+ColState Sprite::autoCol(Sprite* obj){//good
 	Parr* points;
 	ColState state;
 	points = rectCol(obj);
@@ -487,7 +528,7 @@ ColState Sprite::autoCol(Sprite* obj){
 	}
 }
 
-void Sprite::animUD(){
+void Sprite::animUD(){//good
 	if(animate){
 		frameCounter++;
 		if(frameCounter>=fpf){
@@ -502,7 +543,7 @@ void Sprite::animUD(){
 	}
 }
 
-void Sprite::moveTo(double x,double y){
+void Sprite::moveTo(double x,double y){//good
 	double diffx,diffy;
 	diffx=X()-x;
 	diffy=Y()-y;
@@ -516,7 +557,7 @@ void Sprite::moveTo(double x,double y){
 	
 }
 
-void Sprite::setRelative(Sprite* host,bool sameRotCenter){
+void Sprite::setRelative(Sprite* host,bool sameRotCenter){//good
 	this->disableRelative();
 	if(host!=NULL){
 		SpriteCont* temp;
@@ -530,7 +571,7 @@ void Sprite::setRelative(Sprite* host,bool sameRotCenter){
 		}
 	}
 }
-void Sprite::disableRelative(){
+void Sprite::disableRelative(){//good
 	if(host!=NULL){
 		SpriteCont* temp,*prev;
 		temp=host->relFirst;
@@ -550,7 +591,7 @@ void Sprite::disableRelative(){
 	host=NULL;
 }
 
-void Sprite::setAngle(double angle){
+void Sprite::setAngle(double angle){//good
 	double diff = this->angle-angle;
 	this->angle=angle;
 	SpriteCont* temp = relFirst;
@@ -559,4 +600,40 @@ void Sprite::setAngle(double angle){
 		temp=temp->next;
 
 	}
+}
+
+Image* Sprite::loadImage(std::string bmp,SDL_Renderer* renderer){//good
+	if(renderer!=NULL){
+		Image* temp = new Image();
+		temp->surface=new Surface(SDL_LoadBMP(bmp.c_str()));
+		temp->texture=new Texture(SDL_CreateTextureFromSurface(renderer,temp->surface->s));
+		temp->renderer = renderer;
+		temp->texture->user=true;
+		temp->surface->user=true;
+		return temp;
+	}
+	return NULL;
+}
+
+bool Sprite::setAllAlpaMod(Uint8 alpha){//good
+	
+	for(int i=0;i<nextImage;i++){
+		Image* temp = new Image();
+		temp->surface=images[i]->surface;
+		images[i]->surface->count+=1;
+		temp->renderer=images[i]->renderer;
+		temp->texture=new Texture(SDL_CreateTextureFromSurface(temp->renderer,temp->surface->s));
+		if(SDL_SetTextureAlphaMod(temp->texture->t,alpha)==0){
+			decSurface(images[i]->surface);
+			decTexture(images[i]->texture);
+			delete images[i];
+			
+			images[i]=temp;
+		}else{
+			delete temp;
+			return false;
+		}
+	}
+
+	return true;
 }

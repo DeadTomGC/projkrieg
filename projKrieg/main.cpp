@@ -42,6 +42,7 @@ int main(int argc, char *argv[]){
 	mysprite->sizeTo(100,200);
 	mysprite->setAnimationFPF(6);
 	mysprite->setAnimationFrames(0,9);
+	mysprite->setAllAlpaMod(100);
 	mysprite->loopAnim();
 	sprite3->setRelative(mysprite,true);
 	while(running){
