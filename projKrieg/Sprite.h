@@ -2,6 +2,7 @@
 #include <string>
 #include "SDL.h"
 #include "utils.h"
+#include <time.h>
 //#include <vld.h>
 
 class Surface{ //a container that allows references to be counted s is the actual surface
@@ -26,7 +27,6 @@ struct Image{
 	Surface* surface;
 	Texture* texture;
 	SDL_Renderer* renderer;
-
 };
 
 
@@ -55,7 +55,7 @@ public:
 	void setImage(int i){curImage = i;}
 	void addImage(std::string bmp);
 	void addImage(Image* img);
-	//Image* getImage(int i){return images[i];}
+	
 	void setImageColorKey(int sprite,bool flag,Uint8 R,Uint8 G,Uint8 B);//a negitive sprite index will set all the color keys
 	void setPriority(int pri);
 	Parr* rectCol(Sprite* obj);//IMPORTANT!!! DELETE THE Parr* AFTER USE!!!!
@@ -78,16 +78,20 @@ public:
 	int rotCentX(){return center->x;}
 	int rotCentY(){return center->y;}
 	double getAngle(){return angle;}
-	void setAngle(double angle);
+	void setAngle(double angle,bool abs = true);
 	double X(void){return x;}
 	double Y(void){return y;}
-	void moveTo(double x,double y);
+	void moveTo(double x,double y,bool abs = true);
 	void sizeTo(int w,int h){dstrect->w=w;dstrect->h=h;center->x=w/2;center->y=h/2;}
 	void setVisible(bool vis){this->vis=vis;}
 	bool isVisible(){return vis;}
 protected:
 	//classes:
-	class SpriteCont{
+	struct ColorKey{
+		Uint32 colorKey;
+		int flag;
+	};
+	class SpriteCont{//used to keep track of relative sprites
 	public:
 		SpriteCont(){next=NULL;sprite=NULL;}
 		SpriteCont* next;
@@ -113,18 +117,22 @@ protected:
 		RenderLink* next;
 		SDL_Renderer* rend;
 	};
-
+	
 	void animUD();//updates animations
 	//static vars:
+	static int framesToAverage;
+	static double fps,targetfps;
 	static PriList* zero;//the lowest priority that starts at 0 but may not remain there
 	static SDL_Renderer* defaultRenderer;//the default renderer
 	//non-static vars:
+	ColorKey* keys;
 	SDL_Rect *dstrect,*srcrect;//destination rectangle and source rectanlge
+	Uint8 alpha;
 	double x,y;
 	bool animate,loop; //animate?
 	int startF,endF; //set the image number to start on and the image number to end on
-	int frameCounter; //used to keep track of passed frames
-	int fpf; // the number of frames per frame
+	double frameCounter; //used to keep track of passed frames
+	double fpf; // the number of frames per frame
 	int imageCount;//max images
 	int nextImage;//where to place next image in array
 	int curImage;//which image will be rendered

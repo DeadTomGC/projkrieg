@@ -13,7 +13,7 @@ int main(int argc, char *argv[]){
 
 	SDL_Init(SDL_INIT_VIDEO);
 	SDL_Window* screen = SDL_CreateWindow( "projKrieg",100,100,640, 480, SDL_WINDOW_OPENGL );
-	SDL_Renderer* renderer = SDL_CreateRenderer(screen, -1, SDL_RENDERER_PRESENTVSYNC|SDL_RENDERER_ACCELERATED);
+	SDL_Renderer* renderer = SDL_CreateRenderer(screen, -1, SDL_RENDERER_ACCELERATED);
 
 	Sprite::setDefaultRenderer(renderer);
 	Sprite* mysprite = Sprite::loadSprite("h1.bmp",10);
@@ -26,10 +26,10 @@ int main(int argc, char *argv[]){
 	mysprite->addImage("h8.bmp");
 	mysprite->addImage("h9.bmp");
 	mysprite->addImage("h10.bmp");
-	mysprite->setImageColorKey(-1,true,0,0,0,1);
+	mysprite->setImageColorKey(-1,true,0,0,0);
 	Sprite* sprite2 = Sprite::loadSprite("back.bmp");
 	Sprite* sprite3 = Sprite::loadSprite("humanity.bmp",1);
-	sprite3->setImageColorKey(0,true,0,0,0,1);
+	sprite3->setImageColorKey(0,true,0,0,0);
 	sprite3->setPriority(1);
 	sprite3->sizeTo(200,300);
 	sprite2->sizeTo(640,480);
@@ -95,10 +95,10 @@ int main(int argc, char *argv[]){
 		}
 		//std::cerr<<sqrt(speedx*speedx+speedy*speedy)<<std::endl;
 		if(m_keystate[SDL_SCANCODE_Q]==1){
-			mysprite->setAngle(mysprite->getAngle()-5);
+			mysprite->setAngle(mysprite->getAngle()-5,false);
 		}
 		if(m_keystate[SDL_SCANCODE_E]==1){
-			mysprite->setAngle(mysprite->getAngle()+5);
+			mysprite->setAngle(mysprite->getAngle()+5,false);
 		}
 		
 
@@ -118,7 +118,7 @@ int main(int argc, char *argv[]){
 		if(abs(speedy)<0.15){
 			speedy=0;
 		}
-		mysprite->moveTo(mysprite->X()+speedx,mysprite->Y()+speedy);
+		mysprite->moveTo(mysprite->X()+speedx,mysprite->Y()+speedy,false);
 
 		ColState state=mysprite->autoCol(sprite3);
 		if(state == OBJ_LEFT || state == OBJ_RIGHT){

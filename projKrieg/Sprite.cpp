@@ -4,8 +4,11 @@
 
 Sprite::PriList* Sprite::zero=NULL;
 SDL_Renderer* Sprite::defaultRenderer=NULL;
+int Sprite::framesToAverage=10;
+double Sprite::fps=10000,Sprite::targetfps=60;
 
 Sprite::Sprite(){
+	alpha=255;
 	renderer=defaultRenderer;
 	host = NULL;
 	curImage=0;
@@ -29,8 +32,13 @@ Sprite::Sprite(){
 }
 
 Sprite* Sprite::loadSprite(std::string bmp,int imageCount){//good
-	if(defaultRenderer!=NULL && imageCount>0){
+
+	if(defaultRenderer!=NULL && imageCount>0){	
 		Sprite* temp = new Sprite();
+		temp->keys = new ColorKey[imageCount];
+		for(int i=0;i<imageCount;i++){
+			temp->keys[i].flag=-1;
+		}
 		temp->renderer=defaultRenderer;
 		temp->imageCount=imageCount;
 		temp->images=new Image*[imageCount];
@@ -69,6 +77,10 @@ Sprite* Sprite::loadSprite(std::string bmp,int imageCount){//good
 Sprite* Sprite::loadSprite(std::string bmp,SDL_Renderer* renderer,int imageCount){//good
 	if(imageCount>0){
 		Sprite* temp = new Sprite();
+		temp->keys = new ColorKey[imageCount];
+		for(int i=0;i<imageCount;i++){
+			temp->keys[i].flag=-1;
+		}
 		temp->renderer=renderer;
 		temp->imageCount=imageCount;
 		temp->images=new Image*[imageCount];
@@ -108,6 +120,10 @@ Sprite* Sprite::loadSprite(std::string bmp,SDL_Renderer* renderer,int imageCount
 Sprite* Sprite::makeSprite(Image* img,int imageCount){//good
 	if(img!=NULL && imageCount>0){
 		Sprite* temp = new Sprite();
+		temp->keys = new ColorKey[imageCount];
+		for(int i=0;i<imageCount;i++){
+			temp->keys[i].flag=-1;
+		}
 		temp->renderer=img->renderer;
 		temp->imageCount=imageCount;
 		temp->images=new Image*[imageCount];
@@ -160,8 +176,11 @@ void Sprite::setImageColorKey(int image,bool flag,Uint8 R,Uint8 G,Uint8 B){ //se
 			oldFlag = SDL_GetColorKey(images[image]->surface->s,&colorKey);
 			if(flag){
 				SDL_SetColorKey(images[image]->surface->s,SDL_TRUE,SDL_MapRGB(images[image]->surface->s->format,R,G,B));
+				keys[image].flag=0;
+				keys[image].colorKey=SDL_MapRGB(images[image]->surface->s->format,R,G,B);
 			}else{
 				SDL_SetColorKey(images[image]->surface->s,SDL_FALSE,SDL_MapRGB(images[image]->surface->s->format,R,G,B));
+				keys[image].flag=-1;
 			}
 			temp->texture=new Texture(SDL_CreateTextureFromSurface(renderer,images[image]->surface->s));
 			if(oldFlag==0){
@@ -184,8 +203,11 @@ void Sprite::setImageColorKey(int image,bool flag,Uint8 R,Uint8 G,Uint8 B){ //se
 		oldFlag = SDL_GetColorKey(images[image]->surface->s,&colorKey);
 		if(flag){
 			SDL_SetColorKey(images[image]->surface->s,SDL_TRUE,SDL_MapRGB(images[image]->surface->s->format,R,G,B));
+			keys[image].flag=0;
+			keys[image].colorKey=SDL_MapRGB(images[image]->surface->s->format,R,G,B);
 		}else{
 			SDL_SetColorKey(images[image]->surface->s,SDL_FALSE,SDL_MapRGB(images[image]->surface->s->format,R,G,B));
+			keys[image].flag=-1;
 		}
 		temp->texture=new Texture(SDL_CreateTextureFromSurface(renderer,images[image]->surface->s));
 		if(oldFlag==0){
@@ -256,12 +278,29 @@ void Sprite::setPriority(int pri){//good
 }
 
 
-void Sprite::renderSprites(){//good
+void Sprite::renderSprites(){//good don't multithread this
+	static int count=framesToAverage;
+	static clock_t oldTime=clock(),period=0;
 	PriList* currentL;
 	Sprite* currentS;
 	RenderLink* temp = NULL;
 	currentL=zero;
 
+	count++;
+	if(count>framesToAverage-1){
+		count=0;
+		period = clock()-oldTime;
+		fps = (CLOCKS_PER_SEC/((double)period))*framesToAverage;
+		oldTime=clock();
+
+		if(period<CLOCKS_PER_SEC/200){
+			framesToAverage++;
+		}
+		if(period>CLOCKS_PER_SEC/50){
+			framesToAverage--;
+		}
+	}
+	
 	while(currentL!=NULL){
 		currentS=currentL->next;
 		while(currentS!=NULL){
@@ -339,6 +378,11 @@ void Sprite::addImage(Image* img){//good
 Sprite* Sprite::cloneSprite(Sprite* original){//good
 	if(original!=NULL){
 		Sprite* temp = new Sprite();
+		temp->keys = new ColorKey[original->imageCount];
+		for(int i=0;i<original->imageCount;i++){
+			temp->keys[i].flag=original->keys[i].flag;
+			temp->keys[i].colorKey=original->keys[i].colorKey;
+		}
 		temp->renderer=original->renderer;
 		temp->imageCount=original->imageCount;
 		temp->images=new Image*[original->imageCount];
@@ -530,7 +574,7 @@ ColState Sprite::autoCol(Sprite* obj){//good
 
 void Sprite::animUD(){//good
 	if(animate){
-		frameCounter++;
+		frameCounter+=targetfps/fps;
 		if(frameCounter>=fpf){
 			frameCounter=0;
 			curImage++;
@@ -543,15 +587,24 @@ void Sprite::animUD(){//good
 	}
 }
 
-void Sprite::moveTo(double x,double y){//good
+void Sprite::moveTo(double x,double y,bool abs){//bad
 	double diffx,diffy;
 	diffx=X()-x;
 	diffy=Y()-y;
-	this->x=x;this->y=y;dstrect->x=(int)x;dstrect->y=(int)y;
-	SpriteCont* temp = relFirst;
-	while(temp!=NULL){
-		temp->sprite->moveTo(temp->sprite->X()-diffx,temp->sprite->Y()-diffy);
-		temp=temp->next;
+	if(abs){
+		this->x=x;this->y=y;dstrect->x=(int)x;dstrect->y=(int)y;
+		SpriteCont* temp = relFirst;
+		while(temp!=NULL){
+			temp->sprite->moveTo(temp->sprite->X()-diffx,temp->sprite->Y()-diffy);
+			temp=temp->next;
+		}
+	}else{
+		this->x-=diffx*(targetfps/fps);this->y-=diffy*(targetfps/fps);dstrect->x=(int)(this->x);dstrect->y=(int)(this->y);
+		SpriteCont* temp = relFirst;
+		while(temp!=NULL){
+			temp->sprite->moveTo(temp->sprite->X()-diffx,temp->sprite->Y()-diffy,false);
+			temp=temp->next;
+		}
 
 	}
 	
@@ -591,13 +644,22 @@ void Sprite::disableRelative(){//good
 	host=NULL;
 }
 
-void Sprite::setAngle(double angle){//good
+void Sprite::setAngle(double angle,bool abs){//bad
 	double diff = this->angle-angle;
-	this->angle=angle;
-	SpriteCont* temp = relFirst;
-	while(temp!=NULL){
-		temp->sprite->setAngle(temp->sprite->getAngle()-diff);
-		temp=temp->next;
+	if(abs){
+		this->angle=angle;
+		SpriteCont* temp = relFirst;
+		while(temp!=NULL){
+			temp->sprite->setAngle(temp->sprite->getAngle()-diff);
+			temp=temp->next;
+		}
+	}else{
+		this->angle-=diff*(targetfps/fps);
+		SpriteCont* temp = relFirst;
+		while(temp!=NULL){
+			temp->sprite->setAngle(temp->sprite->getAngle()-diff,false);
+			temp=temp->next;
+		}
 
 	}
 }
@@ -616,13 +678,27 @@ Image* Sprite::loadImage(std::string bmp,SDL_Renderer* renderer){//good
 }
 
 bool Sprite::setAllAlpaMod(Uint8 alpha){//good
-	
+	this->alpha=alpha;
+	Uint32 colorKey;
+	int oldFlag;
 	for(int i=0;i<nextImage;i++){
 		Image* temp = new Image();
 		temp->surface=images[i]->surface;
 		images[i]->surface->count+=1;
 		temp->renderer=images[i]->renderer;
+
+		oldFlag = SDL_GetColorKey(images[i]->surface->s,&colorKey);
+		if(keys[i].flag==0){
+			SDL_SetColorKey(images[i]->surface->s,SDL_TRUE,keys[i].colorKey);
+		}else{
+			SDL_SetColorKey(images[i]->surface->s,SDL_FALSE,keys[i].colorKey);
+		}
 		temp->texture=new Texture(SDL_CreateTextureFromSurface(temp->renderer,temp->surface->s));
+		if(oldFlag==0){
+			SDL_SetColorKey(images[i]->surface->s,SDL_TRUE,colorKey);
+		}else{
+			SDL_SetColorKey(images[i]->surface->s,SDL_FALSE,colorKey);
+		}
 		if(SDL_SetTextureAlphaMod(temp->texture->t,alpha)==0){
 			decSurface(images[i]->surface);
 			decTexture(images[i]->texture);
@@ -634,6 +710,6 @@ bool Sprite::setAllAlpaMod(Uint8 alpha){//good
 			return false;
 		}
 	}
-
+	
 	return true;
 }
