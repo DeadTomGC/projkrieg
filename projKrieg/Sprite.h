@@ -44,6 +44,9 @@ class Sprite{
 public:
 	static void setDefaultRenderer(SDL_Renderer* renderer){defaultRenderer = renderer;}
 	static void renderSprites();
+	static double getFPS(){return fps;}
+	static void setTargetFPS(double targetfps){Sprite::targetfps=targetfps;}
+	static double getTargetFPS(){return targetfps;}
 	static Image* loadImage(std::string bmp,SDL_Renderer* renderer=defaultRenderer);
 	static Sprite* loadSprite(std::string bmp,int imageCount=1);
 	static Sprite* loadSprite(std::string bmp,SDL_Renderer* renderer,int imageCount=1);
@@ -73,15 +76,16 @@ public:
 	void stopAnim(){animate = false;curImage=startF;}
 	void contAnim(){animate = true;}
 
+	int getImageColorKey(int i,Uint32& colorKey){colorKey=this->keys[i].colorKey;return this->keys[i].flag;}
 	void setAnimationFPF(int fpf){this->fpf=fpf;}
 	void setRotCenter(int x,int y){center->x=x,center->y=y;}
 	int rotCentX(){return center->x;}
 	int rotCentY(){return center->y;}
 	double getAngle(){return angle;}
-	void setAngle(double angle,bool abs = true);
+	void setAngle(double angle,bool abs = true); //accounts for fps if you have abs be false
 	double X(void){return x;}
 	double Y(void){return y;}
-	void moveTo(double x,double y,bool abs = true);
+	void moveTo(double x,double y,bool abs = true);//accounts for fps if you have abs be false
 	void sizeTo(int w,int h){dstrect->w=w;dstrect->h=h;center->x=w/2;center->y=h/2;}
 	void setVisible(bool vis){this->vis=vis;}
 	bool isVisible(){return vis;}
@@ -121,14 +125,14 @@ protected:
 	void animUD();//updates animations
 	//static vars:
 	static int framesToAverage;
-	static double fps,targetfps;
+	static double fps,targetfps; //current fps and target fps which is how many fps the programmer should count on getting when moving sprites around
 	static PriList* zero;//the lowest priority that starts at 0 but may not remain there
 	static SDL_Renderer* defaultRenderer;//the default renderer
 	//non-static vars:
-	ColorKey* keys;
+	ColorKey* keys;// array of color keys for all images
 	SDL_Rect *dstrect,*srcrect;//destination rectangle and source rectanlge
-	Uint8 alpha;
-	double x,y;
+	Uint8 alpha;//alpha value for whole sprite
+	double x,y; //location
 	bool animate,loop; //animate?
 	int startF,endF; //set the image number to start on and the image number to end on
 	double frameCounter; //used to keep track of passed frames
@@ -144,7 +148,7 @@ protected:
 	Sprite *next,*prev,*host;//the next and previous sprite in the PriList
 	PriList* priList;//priList that the sprite is linked to
 	SpriteCont* relFirst; //the first in a list of sprites that are to be positioned relative to this one.
-	bool vis;
+	bool vis;//should the sprite be rendered?
 private:
 	//helper that clears the current sprite from the render list
 	void clearFromList(){

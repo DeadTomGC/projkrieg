@@ -50,6 +50,7 @@ int main(int argc, char *argv[]){
 		if(m_keystate[SDL_SCANCODE_ESCAPE]==1){
 			running=false;
 		}
+		accel = (0.3*Sprite::getTargetFPS())/Sprite::getFPS();
 		if(sqrt(speedx*speedx+speedy*speedy)<topspeed){
 			if(m_keystate[SDL_SCANCODE_A]==1){
 				
