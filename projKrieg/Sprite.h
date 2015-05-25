@@ -42,7 +42,11 @@ enum ColState{
 
 class Sprite{
 public:
+	static void createDefaultWindow(std::string windowName,int x,int y,int sizeX,int sizeY,bool vsync);
+	static SDL_Window* getDefaultWindow(){return defaultWindow;}
+	static SDL_Renderer* getDefaultRenderer(){return defaultRenderer;}
 	static void setDefaultRenderer(SDL_Renderer* renderer){defaultRenderer = renderer;}
+	static void setDefaultWindow(SDL_Window* window){defaultWindow = window;}
 	static void renderSprites();
 	static double getFPS(){return fps;}
 	static void setTargetFPS(double targetfps){Sprite::targetfps=targetfps;}
@@ -54,6 +58,7 @@ public:
 	static Sprite* cloneSprite(Sprite* original);
 	static Sprite* cloneSprite(Sprite* original,SDL_Renderer* renderer);
 	static void deleteSprite(Sprite* sprite,bool deleteResources=false);
+
 	//non-static functions:
 	void setImage(int i){curImage = i;}
 	void addImage(std::string bmp);
@@ -69,15 +74,17 @@ public:
 	void disableRelative();
 
 	void setAnimationFrames(int start,int end){startF=start;endF=end;}
-	
+
+	void setFrame(int frame){if(frame>0 && frame<this->nextImage)curImage=frame;} //bad
 	void playAnim(){animate = true;loop = false;frameCounter=0;curImage=startF;}
 	void loopAnim(){animate = true;loop = true;frameCounter=0;curImage=startF;}
 	void pauseAnim(){animate = false;}
 	void stopAnim(){animate = false;curImage=startF;}
 	void contAnim(){animate = true;}
 
+	void setFlip(SDL_RendererFlip mode){flip = mode;}
 	int getImageColorKey(int i,Uint32& colorKey){colorKey=this->keys[i].colorKey;return this->keys[i].flag;}
-	void setAnimationFPF(int fpf){this->fpf=fpf;}
+	void setAnimationFPF(int fpf){this->fpf=fpf;} //set animations frames perframe of animation
 	void setRotCenter(int x,int y){center->x=x,center->y=y;}
 	int rotCentX(){return center->x;}
 	int rotCentY(){return center->y;}
@@ -87,6 +94,11 @@ public:
 	double Y(void){return y;}
 	void moveTo(double x,double y,bool abs = true);//accounts for fps if you have abs be false
 	void sizeTo(int w,int h){dstrect->w=w;dstrect->h=h;center->x=w/2;center->y=h/2;}
+	void setDrawRegion(int x,int y,int w,int h);
+	int getDRX();
+	int getDRY();
+	int getDRW();
+	int getDRH();
 	void setVisible(bool vis){this->vis=vis;}
 	bool isVisible(){return vis;}
 protected:
@@ -128,6 +140,7 @@ protected:
 	static double fps,targetfps; //current fps and target fps which is how many fps the programmer should count on getting when moving sprites around
 	static PriList* zero;//the lowest priority that starts at 0 but may not remain there
 	static SDL_Renderer* defaultRenderer;//the default renderer
+	static SDL_Window* defaultWindow;//the default window
 	//non-static vars:
 	ColorKey* keys;// array of color keys for all images
 	SDL_Rect *dstrect,*srcrect;//destination rectangle and source rectanlge

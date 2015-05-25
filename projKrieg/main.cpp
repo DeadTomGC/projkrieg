@@ -1,21 +1,19 @@
 #include "Sprite.h"
 #include "SDL.h"
-
+#include <fstream>
 //#include <vld.h>
 
 bool running=true;
 int main(int argc, char *argv[]){
 	const Uint8 * m_keystate;
 	int nkeys = 0;
-	double topspeed = 5;
-	double accel = 0.3;
+	double topspeed = 10;
+	double accel = 0.4;
 	double speedx=0,speedy=0;
-
-	SDL_Init(SDL_INIT_VIDEO);
-	SDL_Window* screen = SDL_CreateWindow( "projKrieg",100,100,640, 480, SDL_WINDOW_OPENGL );
-	SDL_Renderer* renderer = SDL_CreateRenderer(screen, -1, SDL_RENDERER_ACCELERATED);
-
-	Sprite::setDefaultRenderer(renderer);
+	double damp = 0.15;
+	
+	Sprite::createDefaultWindow("projKrieg",30,30,640,480,false);
+	Sprite::setTargetFPS(60);
 	Sprite* mysprite = Sprite::loadSprite("h1.bmp",10);
 	mysprite->addImage("h2.bmp");
 	mysprite->addImage("h3.bmp");
@@ -45,51 +43,52 @@ int main(int argc, char *argv[]){
 	mysprite->setAllAlpaMod(100);
 	mysprite->loopAnim();
 	sprite3->setRelative(mysprite,true);
+
 	while(running){
 		SDL_PumpEvents();
+		
 		if(m_keystate[SDL_SCANCODE_ESCAPE]==1){
 			running=false;
 		}
-		accel = (0.3*Sprite::getTargetFPS())/Sprite::getFPS();
+		double realaccel = (accel*Sprite::getTargetFPS())/Sprite::getFPS();
 		if(sqrt(speedx*speedx+speedy*speedy)<topspeed){
 			if(m_keystate[SDL_SCANCODE_A]==1){
-				
-				speedx-=accel;
+				speedx-=realaccel;
 				if(abs(speedy)>abs(speedx)){
 					if(m_keystate[SDL_SCANCODE_W]==1){
-						speedy+=accel;
+						speedy+=realaccel;
 					}else if(m_keystate[SDL_SCANCODE_S]==1){
-						speedy-=accel;
+						speedy-=realaccel;
 					}
 				}
 			}
 			if(m_keystate[SDL_SCANCODE_W]==1){
-				speedy-=accel;
+				speedy-=realaccel;
 				if(abs(speedx)>abs(speedy)){
 					if(m_keystate[SDL_SCANCODE_A]==1){
-						speedx+=accel;
+						speedx+=realaccel;
 					}else if(m_keystate[SDL_SCANCODE_D]==1){
-						speedx-=accel;
+						speedx-=realaccel;
 					}
 				}
 			}
 			if(m_keystate[SDL_SCANCODE_D]==1){
-				speedx+=accel;
+				speedx+=realaccel;
 				if(abs(speedy)>abs(speedx)){
 					if(m_keystate[SDL_SCANCODE_W]==1){
-						speedy+=accel;
+						speedy+=realaccel;
 					}else if(m_keystate[SDL_SCANCODE_S]==1){
-						speedy-=accel;
+						speedy-=realaccel;
 					}
 				}
 			}
 			if(m_keystate[SDL_SCANCODE_S]==1){
-				speedy+=accel;
+				speedy+=realaccel;
 				if(abs(speedx)>abs(speedy)){
 					if(m_keystate[SDL_SCANCODE_A]==1){
-						speedx+=accel;
+						speedx+=realaccel;
 					}else if(m_keystate[SDL_SCANCODE_D]==1){
-						speedx-=accel;
+						speedx-=realaccel;
 					}
 				}
 			}
@@ -102,21 +101,21 @@ int main(int argc, char *argv[]){
 			mysprite->setAngle(mysprite->getAngle()+5,false);
 		}
 		
-
+		double realdamp = (damp*Sprite::getTargetFPS())/Sprite::getFPS();
 		if(speedx<0){
-			speedx+=0.15;
+			speedx+=realdamp;
 		}else if(speedx>0){
-			speedx-=0.15;
+			speedx-=realdamp;
 		}
 		if(speedy<0){
-			speedy+=0.15;
+			speedy+=realdamp;
 		}else if(speedy>0){
-			speedy-=0.15;
+			speedy-=realdamp;
 		}
-		if(abs(speedx)<0.15){
+		if(abs(speedx)<realdamp){
 			speedx=0;
 		}
-		if(abs(speedy)<0.15){
+		if(abs(speedy)<realdamp){
 			speedy=0;
 		}
 		mysprite->moveTo(mysprite->X()+speedx,mysprite->Y()+speedy,false);
@@ -131,13 +130,8 @@ int main(int argc, char *argv[]){
 			speedx/=1.1;
 		}
 
-		/*Parr* temp;
-		if(temp=mysprite->rectCol(sprite3)){
-			sprite2->setVisible(false);
-		}else{
-			sprite2->setVisible(true);
-		}*/
 		Sprite::renderSprites();
+		SDL_FlushEvents(SDL_QUIT,SDL_DROPFILE);
 	}
 
 	return 0;

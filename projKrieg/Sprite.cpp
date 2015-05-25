@@ -4,8 +4,9 @@
 
 Sprite::PriList* Sprite::zero=NULL;
 SDL_Renderer* Sprite::defaultRenderer=NULL;
+SDL_Window* Sprite::defaultWindow=NULL;
 int Sprite::framesToAverage=10;
-double Sprite::fps=10000,Sprite::targetfps=60;
+double Sprite::fps=60,Sprite::targetfps=60;
 
 Sprite::Sprite(){
 	alpha=255;
@@ -30,6 +31,25 @@ Sprite::Sprite(){
 	flip = SDL_FLIP_NONE;
 	x=y=0;
 }
+
+
+void Sprite::createDefaultWindow(std::string windowName,int x,int y,int sizeX,int sizeY,bool vsync){
+	unsigned int sync = 0;
+	if(vsync){
+		sync = sync|SDL_RENDERER_PRESENTVSYNC;
+	}
+	if(SDL_INIT_VIDEO&SDL_WasInit(SDL_INIT_EVERYTHING)){
+		defaultWindow = SDL_CreateWindow( windowName.c_str(),x,y,sizeX, sizeY, SDL_WINDOW_OPENGL );
+		defaultRenderer = SDL_CreateRenderer(defaultWindow, -1, SDL_RENDERER_ACCELERATED|sync);
+		
+	}else{
+		SDL_Init(SDL_INIT_VIDEO);
+		defaultWindow = SDL_CreateWindow( windowName.c_str(),x,y,sizeX, sizeY, SDL_WINDOW_OPENGL );
+		defaultRenderer = SDL_CreateRenderer(defaultWindow, -1, SDL_RENDERER_ACCELERATED|sync);
+	}
+
+}
+
 
 Sprite* Sprite::loadSprite(std::string bmp,int imageCount){//good
 
@@ -587,12 +607,12 @@ void Sprite::animUD(){//good
 	}
 }
 
-void Sprite::moveTo(double x,double y,bool abs){//bad
+void Sprite::moveTo(double newX,double newY,bool abs){//good
 	double diffx,diffy;
-	diffx=X()-x;
-	diffy=Y()-y;
+	diffx=X()-newX;
+	diffy=Y()-newY;
 	if(abs){
-		this->x=x;this->y=y;dstrect->x=(int)x;dstrect->y=(int)y;
+		this->x=newX;this->y=newY;dstrect->x=(int)newX;dstrect->y=(int)newY;
 		SpriteCont* temp = relFirst;
 		while(temp!=NULL){
 			temp->sprite->moveTo(temp->sprite->X()-diffx,temp->sprite->Y()-diffy);
@@ -712,4 +732,49 @@ bool Sprite::setAllAlpaMod(Uint8 alpha){//good
 	}
 	
 	return true;
+}
+
+void Sprite::setDrawRegion(int x,int y,int w,int h){
+	if(srcrect!=NULL){
+		srcrect->x=x;
+		srcrect->y=y;
+		srcrect->w=w;
+		srcrect->h=h;
+	}else{
+		srcrect=new SDL_Rect();
+		srcrect->x=x;
+		srcrect->y=y;
+		srcrect->w=w;
+		srcrect->h=h;
+	}
+}
+
+
+int Sprite::getDRX(){
+	if(srcrect!=NULL){
+		return srcrect->x;
+	}else{
+		return -1;
+	}
+}
+int Sprite::getDRY(){
+	if(srcrect!=NULL){
+		return srcrect->y;
+	}else{
+		return -1;
+	}
+}
+int Sprite::getDRW(){
+	if(srcrect!=NULL){
+		return srcrect->w;
+	}else{
+		return -1;
+	}
+}
+int Sprite::getDRH(){
+	if(srcrect!=NULL){
+		return srcrect->h;
+	}else{
+		return -1;
+	}
 }

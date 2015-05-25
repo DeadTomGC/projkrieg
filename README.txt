@@ -13,8 +13,8 @@ collisions
 automatic Collision compensation
 flipping
 color keys
+Draw Region Manipulation
+Vsync support
 
 TODO:
-add srcrect manipulation//delayed because who the fuck uses it?
-Complete Vsynce support by allowing for fps access and manipulation
 Fix sprite destruction
