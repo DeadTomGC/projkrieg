@@ -7,7 +7,7 @@
 
 class Surface{ //a container that allows references to be counted s is the actual surface
 public:
-	Surface(SDL_Surface* surface){s=surface;count=1;user=false;}
+	Surface(SDL_Surface* surface){this->s=surface;count=1;user=false;}
 	SDL_Surface* s;
 	int count;
 	bool user;
@@ -15,7 +15,7 @@ public:
 };
 class Texture{ //a container that allows references to be counted t is the actual texture
 public:
-	Texture(SDL_Texture* texture){t=texture;count=1;user=false;}
+	Texture(SDL_Texture* texture){this->t=texture;count=1;user=false;}
 	SDL_Texture* t;
 	int count;
 	bool user;
@@ -57,7 +57,7 @@ public:
 	static Sprite* makeSprite(Image* img,int imageCount=1);
 	static Sprite* cloneSprite(Sprite* original);
 	static Sprite* cloneSprite(Sprite* original,SDL_Renderer* renderer);
-	static void deleteSprite(Sprite* sprite,bool deleteResources=false);
+	static void deleteSprite(Sprite* sprite);
 
 	//non-static functions:
 	void setImage(int i){curImage = i;}
@@ -158,7 +158,7 @@ protected:
 	SDL_RendererFlip flip;//what flip mode
 	SDL_Renderer* renderer;//which renderer to render with
 	Image** images;//array of image pointers
-	Sprite *next,*prev,*host;//the next and previous sprite in the PriList
+	Sprite *next,*prev,*host;//the next and previous sprite in the PriList, host is the parent sprite when relative is enabled
 	PriList* priList;//priList that the sprite is linked to
 	SpriteCont* relFirst; //the first in a list of sprites that are to be positioned relative to this one.
 	bool vis;//should the sprite be rendered?
@@ -173,18 +173,21 @@ private:
 		if(next!=NULL)
 				next->prev=prev;
 	}
-	void decTexture(Texture* texture){
+protected:
+	//helpers for clearing up shared textures and surfaces
+	static void decTexture(Texture* texture){
 		texture->count-=1;
 		if(texture->count==0 && texture->user==false){
 			delete texture;
 		}
 	}
-	void decSurface(Surface* surface){
+	static void decSurface(Surface* surface){
 		surface->count-=1;
 		if(surface->count==0 && surface->user==false){
 			delete surface;
 		}
 	}
+private:
 	Sprite();
 	Sprite(Sprite &s);
 	~Sprite(){}

@@ -43,10 +43,12 @@ int main(int argc, char *argv[]){
 	mysprite->setAllAlpaMod(100);
 	mysprite->loopAnim();
 	sprite3->setRelative(mysprite,true);
-
+	
+	
 	while(running){
 		SDL_PumpEvents();
-		
+		//Sprite* sprite4 = Sprite::loadSprite("back.bmp");
+		//Sprite::deleteSprite(sprite4);
 		if(m_keystate[SDL_SCANCODE_ESCAPE]==1){
 			running=false;
 		}

@@ -82,7 +82,9 @@ Sprite* Sprite::loadSprite(std::string bmp,int imageCount){//good
 		}else{
 			Sprite* temp2;
 			temp2=zero->next;
-			temp2->prev=temp;
+			if(temp2!=NULL){
+				temp2->prev=temp;
+			}
 			zero->next=temp;
 			temp->next=temp2;
 		}
@@ -125,6 +127,9 @@ Sprite* Sprite::loadSprite(std::string bmp,SDL_Renderer* renderer,int imageCount
 		}else{
 			Sprite* temp2;
 			temp2=zero->next;
+			if(temp2!=NULL){
+				temp2->prev=temp;
+			}
 			zero->next=temp;
 			temp->next=temp2;
 		}
@@ -169,7 +174,9 @@ Sprite* Sprite::makeSprite(Image* img,int imageCount){//good
 		}else{
 			Sprite* temp2;
 			temp2=zero->next;
-			temp2->prev=temp;
+			if(temp2!=NULL){
+				temp2->prev=temp;
+			}
 			zero->next=temp;
 			temp->next=temp2;
 		}
@@ -490,19 +497,30 @@ Sprite* Sprite::cloneSprite(Sprite* original,SDL_Renderer* renderer){//good
 }
 
 
-void Sprite::deleteSprite(Sprite* sprite,bool deleteResources){//bad
-	if(!deleteResources){
+void Sprite::deleteSprite(Sprite* sprite){//bad
+	
 		sprite->clearFromList();
-		delete sprite;
-	}else{
-		sprite->clearFromList();
-		for(int i=0;i<sprite->nextImage;i++){//we don't delete renderers...
-			SDL_FreeSurface(sprite->images[i]->surface->s);
-			SDL_DestroyTexture(sprite->images[i]->texture->t);
+		sprite->disableRelative();
+
+		delete[] (sprite->keys);
+		delete (sprite->dstrect);
+		delete (sprite->srcrect);
+		delete (sprite->center);
+
+		SpriteCont* temp = sprite->relFirst, *temp2;
+		while(temp!=NULL){ //disable all the relative child sprites
+			temp2 = temp->next;
+			temp->sprite->disableRelative();
+			temp = temp2;
+		}
+		for(int i=0;i<sprite->nextImage;i++){//delete all images  (or dec the use count)
+			decTexture(sprite->images[i]->texture);
+			decSurface(sprite->images[i]->surface);
 			delete (sprite->images[i]);
 		}
+		delete[] (sprite->images);
+
 		delete sprite;
-	}
 
 }
 
