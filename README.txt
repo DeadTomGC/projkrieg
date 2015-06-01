@@ -1,6 +1,6 @@
 game in progress:
 
-Sprite system under development to allow for easy creation and management of objects in game.
+Sprite system relatively done.
 
 Features so far:
 
@@ -15,6 +15,10 @@ flipping
 color keys
 Draw Region Manipulation
 Vsync support
+sprite destruction
+
 
 TODO:
-Fix sprite destruction
+Add Maps!!!!
+Add Blocks and objects and GlobalObjs for Maps
+

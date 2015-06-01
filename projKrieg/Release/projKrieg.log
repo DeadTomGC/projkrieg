@@ -1,24 +1,19 @@
-﻿Build started 5/26/2015 8:55:49 PM.
-     1>Project "C:\Users\DeadTomGC\Documents\Visual Studio 2010\Projects\projkrieg\projKrieg\projKrieg.vcxproj" on node 2 (build target(s)).
-     1>InitializeBuildStatus:
-         Creating "Release\projKrieg.unsuccessfulbuild" because "AlwaysCreate" was specified.
-       ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+﻿Build started 5/30/2015 11:58:27 PM.
+     1>Project "C:\Users\DeadTomGC\Documents\Visual Studio 2013\Projects\projkrieg\projKrieg\projKrieg.vcxproj" on node 2 (Rebuild target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp Sprite.cpp utils.cpp
          main.cpp
+         Sprite.cpp
+         utils.cpp
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\DeadTomGC\Documents\Visual Studio 2010\Projects\projkrieg\Release\projKrieg.exe" /NOLOGO SDL2.lib SDL2main.lib SDL2test.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\projKrieg.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\DeadTomGC\Documents\Visual Studio 2010\Projects\projkrieg\Release\projKrieg.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\DeadTomGC\Documents\Visual Studio 2010\Projects\projkrieg\Release\projKrieg.lib" /MACHINE:X86 Release\main.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\DeadTomGC\Documents\Visual Studio 2013\Projects\projkrieg\Release\projKrieg.exe" /NOLOGO SDL2.lib SDL2main.lib SDL2test.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\DeadTomGC\Documents\Visual Studio 2013\Projects\projkrieg\Release\projKrieg.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\DeadTomGC\Documents\Visual Studio 2013\Projects\projkrieg\Release\projKrieg.lib" /MACHINE:X86 /SAFESEH Release\main.obj
          Release\Sprite.obj
          Release\utils.obj
          Generating code
          Finished generating code
-         projKrieg.vcxproj -> C:\Users\DeadTomGC\Documents\Visual Studio 2010\Projects\projkrieg\Release\projKrieg.exe
-       Manifest:
-         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\DeadTomGC\Documents\Visual Studio 2010\Projects\projkrieg\Release\projKrieg.exe;#1" /manifest Release\projKrieg.exe.intermediate.manifest
-       FinalizeBuildStatus:
-         Deleting file "Release\projKrieg.unsuccessfulbuild".
-         Touching "Release\projKrieg.lastbuildstate".
-     1>Done Building Project "C:\Users\DeadTomGC\Documents\Visual Studio 2010\Projects\projkrieg\projKrieg\projKrieg.vcxproj" (build target(s)).
+         projKrieg.vcxproj -> C:\Users\DeadTomGC\Documents\Visual Studio 2013\Projects\projkrieg\Release\projKrieg.exe
+     1>Done Building Project "C:\Users\DeadTomGC\Documents\Visual Studio 2013\Projects\projkrieg\projKrieg\projKrieg.vcxproj" (Rebuild target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.92
+Time Elapsed 00:00:01.46
