@@ -24,7 +24,13 @@
     <ClCompile Include="utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Map.cpp">
+    <ClCompile Include="object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UniversalObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,7 +41,13 @@
     <ClInclude Include="utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Map.h">
+    <ClInclude Include="object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="universialObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
