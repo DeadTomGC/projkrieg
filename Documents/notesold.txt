@@ -1,0 +1,38 @@
+Game Features List:
+Player must kill Hitler.
+Can ally with fellow insurgents to topple Nazi regime. 
+Use variety of historic and improvised weapons.
+Employ novel tactics.
+Every fight has the possibility of permanent death.
+If you are wounded, you must be extracted by an NPC.
+AI can rescue the player from the battlefield if they are brave enough. (or under player control)
+Send AI’s into battle for you.
+Choose your route to Hitler.
+Gather resources and establish HQ.
+Encounter a spectrum of individuals who react differently depending on current events.
+RTS controls for friendlies.
+RTS, can give orders like stay in cover or go try something risky
+Not every unit will follow all orders
+Drive vehicles
+
+Start with life savings and a goal to kill hitler (don’t take totally unrelated jobs.)
+Crime life + full out fight at the end. revolt
+small crime->stealth/strategy kill. assassination (possibly special person kill)
+military life->assassination
+need friends with skills
+sabotage hitler’s car
+ to win over NPC’s you must grow their confidence over time, and through events.
+
+
+
+
+
+Engine Features List:
+Movement: WASD
+Aiming mouse
+Friend Inventory->way to check the stats on relations
+dynamic loading of map parts
+multilevel building system
+Prototype: one big map
+contains a number of NPCs
+experiment with relations and 

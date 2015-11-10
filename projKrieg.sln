@@ -1,7 +1,11 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2013 for Windows Desktop
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "projKrieg", "projKrieg\projKrieg.vcxproj", "{6C5CAC4D-E30E-465B-8FB2-1CFB9942C425}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ObjectLib", "ObjectLib\ObjectLib.vcxproj", "{44B4DC05-F112-4319-BD46-E68EE3971E9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +17,10 @@ Global
 		{6C5CAC4D-E30E-465B-8FB2-1CFB9942C425}.Debug|Win32.Build.0 = Debug|Win32
 		{6C5CAC4D-E30E-465B-8FB2-1CFB9942C425}.Release|Win32.ActiveCfg = Release|Win32
 		{6C5CAC4D-E30E-465B-8FB2-1CFB9942C425}.Release|Win32.Build.0 = Release|Win32
+		{44B4DC05-F112-4319-BD46-E68EE3971E9B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{44B4DC05-F112-4319-BD46-E68EE3971E9B}.Debug|Win32.Build.0 = Debug|Win32
+		{44B4DC05-F112-4319-BD46-E68EE3971E9B}.Release|Win32.ActiveCfg = Release|Win32
+		{44B4DC05-F112-4319-BD46-E68EE3971E9B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

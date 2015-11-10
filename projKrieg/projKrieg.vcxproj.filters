@@ -13,42 +13,119 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Engine">
+      <UniqueIdentifier>{a6e411a5-40a6-4af4-9b7f-e083caf10437}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Sprite">
+      <UniqueIdentifier>{98875853-6cd7-45f4-9c52-8098b5212b2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Sprite">
+      <UniqueIdentifier>{691ced90-31de-4874-9b9f-a91af36e9923}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine">
+      <UniqueIdentifier>{a394bae2-9cab-4b35-a6c3-2c2270ae6bd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Map">
+      <UniqueIdentifier>{70eb79ae-32a6-428b-9579-d100cf4a4aac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Map">
+      <UniqueIdentifier>{386d997d-3046-49ae-b169-1f5011e28975}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Test Images">
+      <UniqueIdentifier>{1b5b2b7c-84e5-41eb-9e8c-4e06cfb2aad5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\common">
+      <UniqueIdentifier>{fa83da31-bac1-49a1-9544-ae9f71742b4e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Sprite</Filter>
     </ClCompile>
     <ClCompile Include="utils.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Sprite</Filter>
     </ClCompile>
-    <ClCompile Include="object.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="block.cpp">
+      <Filter>Source Files\Engine\Map</Filter>
     </ClCompile>
     <ClCompile Include="map.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Engine\Map</Filter>
     </ClCompile>
-    <ClCompile Include="UniversalObject.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="object.cpp">
+      <Filter>Source Files\Engine\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="universalObject.cpp">
+      <Filter>Source Files\Engine\Map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprite.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Sprite</Filter>
     </ClInclude>
     <ClInclude Include="utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="object.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Sprite</Filter>
     </ClInclude>
     <ClInclude Include="map.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Engine\Map</Filter>
     </ClInclude>
-    <ClInclude Include="universialObject.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="block.h">
+      <Filter>Header Files\Engine\Map</Filter>
     </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>Header Files\Engine\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="universalObject.h">
+      <Filter>Header Files\Engine\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="classes.h">
+      <Filter>Header Files\Engine\common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="back.bmp">
+      <Filter>Resource Files\Test Images</Filter>
+    </Image>
+    <Image Include="h1.bmp">
+      <Filter>Resource Files\Test Images</Filter>
+    </Image>
+    <Image Include="h2.bmp">
+      <Filter>Resource Files\Test Images</Filter>
+    </Image>
+    <Image Include="h3.bmp">
+      <Filter>Resource Files\Test Images</Filter>
+    </Image>
+    <Image Include="h4.bmp">
+      <Filter>Resource Files\Test Images</Filter>
+    </Image>
+    <Image Include="h5.bmp">
+      <Filter>Resource Files\Test Images</Filter>
+    </Image>
+    <Image Include="h6.bmp">
+      <Filter>Resource Files\Test Images</Filter>
+    </Image>
+    <Image Include="h7.bmp">
+      <Filter>Resource Files\Test Images</Filter>
+    </Image>
+    <Image Include="h8.bmp">
+      <Filter>Resource Files\Test Images</Filter>
+    </Image>
+    <Image Include="h9.bmp">
+      <Filter>Resource Files\Test Images</Filter>
+    </Image>
+    <Image Include="h10.bmp">
+      <Filter>Resource Files\Test Images</Filter>
+    </Image>
+    <Image Include="humanity.bmp">
+      <Filter>Resource Files\Test Images</Filter>
+    </Image>
+    <Image Include="humanity2.bmp">
+      <Filter>Resource Files\Test Images</Filter>
+    </Image>
+    <Image Include="Lball.bmp">
+      <Filter>Resource Files\Test Images</Filter>
+    </Image>
   </ItemGroup>
 </Project>
