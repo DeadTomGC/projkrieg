@@ -1,6 +1,6 @@
 #pragma once
 #include "Sprite.h"
-#include "classes.h"
+#include "core.h"
 #include "SDL.h"
 #include <string>
 
@@ -13,8 +13,8 @@ typedef int(__stdcall *f_type_count)();
 
 class Map{
 
-private:
-	UniversalObject *UniObjs;
+protected:
+
 	Block *VisBlocks;
 	Object** objectIndex;
 	int objectCount;
@@ -28,29 +28,13 @@ private:
 	f_factory_n_obj getNextObject;
 	f_type_count getTypeCount;
 
-	int getInt(char* text, int& start, int end);
-
 public:
 	//functions
-	Map(int spacingX, int spacingY,int scrW,int scrH){
-		this->spacingX = spacingX;
-		this->spacingY = spacingY;
-		this->scrW = scrW;
-		this->scrH = scrH;
-		UniObjs = 0;
-		VisBlocks = 0;
-		objectIndex = 0;
-		getObject = 0;
-		getObjectByIndex = 0;
-		getFirstObject = 0;
-		getNextObject = 0;
-		getTypeCount = 0;
-		objectCount = 0;
-	}
-	int loadMapFromFile(std::string& filename);
+	
+	virtual int loadMapFromFile(std::string& filename)=0;
 
-	int getScreenW();
-	int getScreenH();
-	int getScreenOffsetX();
-	int getScreenOffsetY();
+	virtual int getScreenW(){ return scrW; }
+	virtual int getScreenH(){ return scrH; }
+	virtual int getScreenOffsetX(){ return screenOffsetX; }
+	virtual int getScreenOffsetY(){ return screenOffsetY; }
 };

@@ -2,7 +2,7 @@
 
 int lastObject;
 
-Object* __declspec(dllexport) __stdcall getObject(std::string name){
+__declspec(dllexport) Object* __stdcall getObject(std::string name){
 	//add object type creation here:
 
 
@@ -15,7 +15,7 @@ Object* __declspec(dllexport) __stdcall getObject(std::string name){
 	
 }
 
-Object* __declspec(dllexport) __stdcall getObjectByIndex(int index){
+__declspec(dllexport) Object* __stdcall getObjectByIndex(int index){
 	//add object type creation here:
 
 
@@ -28,19 +28,19 @@ Object* __declspec(dllexport) __stdcall getObjectByIndex(int index){
 
 }
 
-Object* __declspec(dllexport) __stdcall getFirstObject(){
+__declspec(dllexport) Object* __stdcall getFirstObject(){
 	//add object type creation here:
 	lastObject = 0;
 	return getObjectByIndex(lastObject);
 
 }
-Object* __declspec(dllexport) __stdcall getNextObject(){
+__declspec(dllexport) Object* __stdcall getNextObject(){
 	//add object type creation here:
 	lastObject++;
 	return getObjectByIndex(lastObject);
 }
 
-int __declspec(dllexport) __stdcall getTypeCount(){
+__declspec(dllexport) int __stdcall getTypeCount(){
 	//add object type creation here:
 	return 0;
 }

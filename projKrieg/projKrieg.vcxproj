@@ -77,21 +77,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="block.cpp" />
+    <ClCompile Include="KriegBlock.cpp" />
+    <ClCompile Include="KriegMap.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="map.cpp" />
-    <ClCompile Include="object.cpp" />
     <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="universalObject.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="block.h" />
-    <ClInclude Include="classes.h" />
+    <ClInclude Include="core.h" />
+    <ClInclude Include="KriegBlock.h" />
+    <ClInclude Include="KriegMap.h" />
     <ClInclude Include="map.h" />
+    <ClInclude Include="KriegClasses.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="Sprite.h" />
-    <ClInclude Include="universalObject.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>

@@ -45,7 +45,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>..\..\..\SDL2\include;..\projKrieg;$(IncludePath)</IncludePath>
-    <SourcePath>..\..\..\SDL2\lib\x86;..\projKrieg;$(SourcePath)</SourcePath>
+    <SourcePath>..\projKrieg;$(SourcePath)</SourcePath>
+    <LibraryPath>..\..\..\SDL2\lib\x86;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -77,20 +78,24 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2test.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\projKrieg\block.h" />
+    <ClInclude Include="..\projKrieg\core.h" />
     <ClInclude Include="..\projKrieg\map.h" />
     <ClInclude Include="..\projKrieg\object.h" />
     <ClInclude Include="..\projKrieg\Sprite.h" />
     <ClInclude Include="..\projKrieg\utils.h" />
+    <ClInclude Include="background.h" />
     <ClInclude Include="Factory.h" />
+    <ClInclude Include="objectTypes.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\projKrieg\map.cpp" />
-    <ClCompile Include="..\projKrieg\object.cpp" />
     <ClCompile Include="..\projKrieg\Sprite.cpp" />
     <ClCompile Include="..\projKrieg\utils.cpp" />
+    <ClCompile Include="background.cpp" />
     <ClCompile Include="Factory.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

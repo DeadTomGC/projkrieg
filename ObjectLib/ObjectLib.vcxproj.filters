@@ -16,8 +16,14 @@
     <Filter Include="Header Files\Core">
       <UniqueIdentifier>{ab769064-66e2-4929-a7e7-b2386d400427}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\objects">
+      <UniqueIdentifier>{06a02ddd-036c-4d21-93f0-ab45f2df1ae1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\objects">
+      <UniqueIdentifier>{609b0821-206f-4702-af70-a33e8b187ccb}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files\Core">
-      <UniqueIdentifier>{e31c9641-d862-458c-8780-13353e44f04c}</UniqueIdentifier>
+      <UniqueIdentifier>{5507e1e1-1461-463a-978a-6b5ad51cdc2d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -36,22 +42,31 @@
     <ClInclude Include="..\projKrieg\utils.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="background.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="objectTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\projKrieg\block.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\projKrieg\core.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\projKrieg\map.cpp">
-      <Filter>Source Files\Core</Filter>
+    <ClCompile Include="Factory.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\projKrieg\object.cpp">
-      <Filter>Source Files\Core</Filter>
+    <ClCompile Include="background.cpp">
+      <Filter>Source Files\objects</Filter>
     </ClCompile>
     <ClCompile Include="..\projKrieg\Sprite.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\projKrieg\utils.cpp">
       <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Factory.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

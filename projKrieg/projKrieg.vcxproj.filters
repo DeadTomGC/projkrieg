@@ -37,6 +37,9 @@
     <Filter Include="Header Files\Engine\common">
       <UniqueIdentifier>{fa83da31-bac1-49a1-9544-ae9f71742b4e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine\Core">
+      <UniqueIdentifier>{35b31ba6-c4f1-46d4-a30d-ec053eaf948d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -48,16 +51,10 @@
     <ClCompile Include="utils.cpp">
       <Filter>Source Files\Sprite</Filter>
     </ClCompile>
-    <ClCompile Include="block.cpp">
+    <ClCompile Include="KriegMap.cpp">
       <Filter>Source Files\Engine\Map</Filter>
     </ClCompile>
-    <ClCompile Include="map.cpp">
-      <Filter>Source Files\Engine\Map</Filter>
-    </ClCompile>
-    <ClCompile Include="object.cpp">
-      <Filter>Source Files\Engine\Map</Filter>
-    </ClCompile>
-    <ClCompile Include="universalObject.cpp">
+    <ClCompile Include="KriegBlock.cpp">
       <Filter>Source Files\Engine\Map</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,19 +65,25 @@
     <ClInclude Include="utils.h">
       <Filter>Header Files\Sprite</Filter>
     </ClInclude>
-    <ClInclude Include="map.h">
-      <Filter>Header Files\Engine\Map</Filter>
+    <ClInclude Include="core.h">
+      <Filter>Header Files\Engine\Core</Filter>
     </ClInclude>
     <ClInclude Include="block.h">
-      <Filter>Header Files\Engine\Map</Filter>
+      <Filter>Header Files\Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="map.h">
+      <Filter>Header Files\Engine\Core</Filter>
     </ClInclude>
     <ClInclude Include="object.h">
+      <Filter>Header Files\Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="KriegMap.h">
       <Filter>Header Files\Engine\Map</Filter>
     </ClInclude>
-    <ClInclude Include="universalObject.h">
+    <ClInclude Include="KriegBlock.h">
       <Filter>Header Files\Engine\Map</Filter>
     </ClInclude>
-    <ClInclude Include="classes.h">
+    <ClInclude Include="KriegClasses.h">
       <Filter>Header Files\Engine\common</Filter>
     </ClInclude>
   </ItemGroup>
