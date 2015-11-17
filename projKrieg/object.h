@@ -1,16 +1,14 @@
 #pragma once
-#include "Sprite.h"
 #include "core.h"
-#include "SDL.h"
 #include <string>
 
+//Only contains functionality that is not likely to change
 
 class Object{
 public:
 	Object* getNext(void){ return next; }
 	Object* getPrev(void){ return prev; }
-	virtual void update(void) = 0;
-	virtual Object* new_instance() = 0; //override in subclasses
+	void setParent(Block* parent){ this->parent = parent; }
 	void addToList(Object* &firstInList){
 		if (firstInList){
 			this->next = firstInList;
@@ -21,9 +19,17 @@ public:
 			firstInList = this;
 		}
 	}
+	Object(Block* parent);
+
+	void hide();
+	void show();
+
+	virtual void update(void) = 0;  //override in subclasses
+	virtual Object* new_instance(Block* parent) = 0; //override in subclasses
+	virtual std::string* getTypeName() = 0;
+	static std::string typeName;
 protected:
 	Object *next, *prev;
-	std::string type;
 	Sprite* first;
 	Block* parent;
 	Map* map;

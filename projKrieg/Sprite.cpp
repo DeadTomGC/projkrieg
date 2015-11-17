@@ -2,218 +2,228 @@
 #include "SDL.h"
 //#include <vld.h>
 
-Sprite::PriList* Sprite::zero=NULL;
-SDL_Renderer* Sprite::defaultRenderer=NULL;
-SDL_Window* Sprite::defaultWindow=NULL;
-int Sprite::framesToAverage=10;
-double Sprite::fps=60,Sprite::targetfps=60;
+SharedSpriteData* Sprite::ssd = NULL;
 
 Sprite::Sprite(){
-	alpha=255;
-	renderer=defaultRenderer;
+	alpha = 255;
+	if (ssd) renderer = ssd->defaultRenderer;
 	host = NULL;
-	curImage=0;
-	fpf=1;
+	curImage = 0;
+	fpf = 1;
 	relFirst = NULL;
 	frameCounter = 0;
 	animate = false;
 	loop = false;
-	startF=0;
-	endF=0;
-	next=NULL;
-	prev=NULL;
-	priList=NULL;
-	dstrect=NULL;
-	srcrect=NULL;
+	startF = 0;
+	endF = 0;
+	next = NULL;
+	prev = NULL;
+	userNext = NULL;
+	userNext = NULL;
+	priList = NULL;
+	dstrect = NULL;
+	srcrect = NULL;
 	vis = true;
 	angle = 0;
 	center = new SDL_Point();
 	flip = SDL_FLIP_NONE;
-	x=y=0;
+	x = y = 0;
 }
 
 
-void Sprite::createDefaultWindow(std::string windowName,int x,int y,int sizeX,int sizeY,bool vsync){
+void Sprite::createDefaultWindow(std::string windowName, int x, int y, int sizeX, int sizeY, bool vsync){
 	unsigned int sync = 0;
-	if(vsync){
-		sync = sync|SDL_RENDERER_PRESENTVSYNC;
+	if (vsync){
+		sync = sync | SDL_RENDERER_PRESENTVSYNC;
 	}
-	if(SDL_INIT_VIDEO&SDL_WasInit(SDL_INIT_EVERYTHING)){
-		defaultWindow = SDL_CreateWindow( windowName.c_str(),x,y,sizeX, sizeY, SDL_WINDOW_OPENGL );
-		defaultRenderer = SDL_CreateRenderer(defaultWindow, -1, SDL_RENDERER_ACCELERATED|sync);
-		
-	}else{
+	if (!ssd){
+		ssd = new SharedSpriteData();
+	}
+	if (SDL_INIT_VIDEO&SDL_WasInit(SDL_INIT_EVERYTHING)){
+		ssd->defaultWindow = SDL_CreateWindow(windowName.c_str(), x, y, sizeX, sizeY, SDL_WINDOW_OPENGL);
+		ssd->defaultRenderer = SDL_CreateRenderer(ssd->defaultWindow, -1, SDL_RENDERER_ACCELERATED | sync);
+
+	}
+	else{
 		SDL_Init(SDL_INIT_VIDEO);
-		defaultWindow = SDL_CreateWindow( windowName.c_str(),x,y,sizeX, sizeY, SDL_WINDOW_OPENGL );
-		defaultRenderer = SDL_CreateRenderer(defaultWindow, -1, SDL_RENDERER_ACCELERATED|sync);
+		ssd->defaultWindow = SDL_CreateWindow(windowName.c_str(), x, y, sizeX, sizeY, SDL_WINDOW_OPENGL);
+		ssd->defaultRenderer = SDL_CreateRenderer(ssd->defaultWindow, -1, SDL_RENDERER_ACCELERATED | sync);
 	}
 
 }
 
 
-Sprite* Sprite::loadSprite(std::string bmp,int imageCount){//good
+Sprite* Sprite::loadSprite(std::string bmp, int imageCount){//good
 
-	if(defaultRenderer!=NULL && imageCount>0){	
+	if (ssd && ssd->defaultRenderer != NULL && imageCount > 0){
 		Sprite* temp = new Sprite();
 		temp->keys = new ColorKey[imageCount];
-		for(int i=0;i<imageCount;i++){
-			temp->keys[i].flag=-1;
+		for (int i = 0; i < imageCount; i++){
+			temp->keys[i].flag = -1;
 		}
-		temp->renderer=defaultRenderer;
-		temp->imageCount=imageCount;
-		temp->images=new Image*[imageCount];
+		temp->renderer = ssd->defaultRenderer;
+		temp->imageCount = imageCount;
+		temp->images = new Image*[imageCount];
 		temp->images[0] = new Image();
-		temp->images[0]->surface=new Surface(SDL_LoadBMP(bmp.c_str()));
-		temp->images[0]->texture=new Texture(SDL_CreateTextureFromSurface(defaultRenderer,temp->images[0]->surface->s));
-		temp->images[0]->renderer = defaultRenderer;
+		temp->images[0]->surface = new Surface(SDL_LoadBMP(bmp.c_str()));
+		temp->images[0]->texture = new Texture(SDL_CreateTextureFromSurface(ssd->defaultRenderer, temp->images[0]->surface->s));
+		temp->images[0]->renderer = ssd->defaultRenderer;
 		temp->dstrect = new SDL_Rect();
-		temp->dstrect->w=temp->images[0]->surface->s->w;
-		temp->dstrect->h=temp->images[0]->surface->s->h;
-		temp->center->x=temp->images[0]->surface->s->w/2;
-		temp->center->y=temp->images[0]->surface->s->h/2;
-		temp->dstrect->x=0;
-		temp->dstrect->y=0;
-		temp->nextImage=1;
-		
-		if(zero==NULL){
-			zero = new PriList();
-			zero->priority=0;
-			zero->next=temp;
-		}else{
-			Sprite* temp2;
-			temp2=zero->next;
-			if(temp2!=NULL){
-				temp2->prev=temp;
-			}
-			zero->next=temp;
-			temp->next=temp2;
+		temp->dstrect->w = temp->images[0]->surface->s->w;
+		temp->dstrect->h = temp->images[0]->surface->s->h;
+		temp->center->x = temp->images[0]->surface->s->w / 2;
+		temp->center->y = temp->images[0]->surface->s->h / 2;
+		temp->dstrect->x = 0;
+		temp->dstrect->y = 0;
+		temp->nextImage = 1;
+
+		if (ssd->zero == NULL){
+			ssd->zero = new PriList();
+			ssd->zero->priority = 0;
+			ssd->zero->next = temp;
 		}
-		temp->priList=zero;
+		else{
+			Sprite* temp2;
+			temp2 = ssd->zero->next;
+			if (temp2 != NULL){
+				temp2->prev = temp;
+			}
+			ssd->zero->next = temp;
+			temp->next = temp2;
+		}
+		temp->priList = ssd->zero;
 
 		return temp;
-	}else{
+	}
+	else{
 		return NULL;
 	}
 
 }
-Sprite* Sprite::loadSprite(std::string bmp,SDL_Renderer* renderer,int imageCount){//good
-	if(imageCount>0){
+Sprite* Sprite::loadSprite(std::string bmp, SDL_Renderer* renderer, int imageCount){//good
+	if (ssd && imageCount > 0){
 		Sprite* temp = new Sprite();
 		temp->keys = new ColorKey[imageCount];
-		for(int i=0;i<imageCount;i++){
-			temp->keys[i].flag=-1;
+		for (int i = 0; i < imageCount; i++){
+			temp->keys[i].flag = -1;
 		}
-		temp->renderer=renderer;
-		temp->imageCount=imageCount;
-		temp->images=new Image*[imageCount];
+		temp->renderer = renderer;
+		temp->imageCount = imageCount;
+		temp->images = new Image*[imageCount];
 		temp->images[0] = new Image();
-		temp->images[0]->surface=new Surface(SDL_LoadBMP(bmp.c_str()));
-		temp->images[0]->texture=new Texture(SDL_CreateTextureFromSurface(renderer,temp->images[0]->surface->s));
+		temp->images[0]->surface = new Surface(SDL_LoadBMP(bmp.c_str()));
+		temp->images[0]->texture = new Texture(SDL_CreateTextureFromSurface(renderer, temp->images[0]->surface->s));
 		temp->images[0]->renderer = renderer;
 		temp->dstrect = new SDL_Rect();
-		temp->dstrect->w=temp->images[0]->surface->s->w;
-		temp->dstrect->h=temp->images[0]->surface->s->h;
-		temp->center->x=temp->images[0]->surface->s->w/2;
-		temp->center->y=temp->images[0]->surface->s->h/2;
-		temp->dstrect->x=0;
-		temp->dstrect->y=0;
-		temp->nextImage=1;
-		
-		if(zero==NULL){
-			zero = new PriList();
-			zero->priority=0;
-			zero->next=temp;
+		temp->dstrect->w = temp->images[0]->surface->s->w;
+		temp->dstrect->h = temp->images[0]->surface->s->h;
+		temp->center->x = temp->images[0]->surface->s->w / 2;
+		temp->center->y = temp->images[0]->surface->s->h / 2;
+		temp->dstrect->x = 0;
+		temp->dstrect->y = 0;
+		temp->nextImage = 1;
 
-		}else{
-			Sprite* temp2;
-			temp2=zero->next;
-			if(temp2!=NULL){
-				temp2->prev=temp;
-			}
-			zero->next=temp;
-			temp->next=temp2;
+		if (ssd->zero == NULL){
+			ssd->zero = new PriList();
+			ssd->zero->priority = 0;
+			ssd->zero->next = temp;
+
 		}
-		temp->priList=zero;
+		else{
+			Sprite* temp2;
+			temp2 = ssd->zero->next;
+			if (temp2 != NULL){
+				temp2->prev = temp;
+			}
+			ssd->zero->next = temp;
+			temp->next = temp2;
+		}
+		temp->priList = ssd->zero;
 
 		return temp;
-	}else{
+	}
+	else{
 		return NULL;
 	}
 
 }
 
-Sprite* Sprite::makeSprite(Image* img,int imageCount){//good
-	if(img!=NULL && imageCount>0){
+Sprite* Sprite::makeSprite(Image* img, int imageCount){//good
+	if (ssd && img != NULL && imageCount > 0){
 		Sprite* temp = new Sprite();
 		temp->keys = new ColorKey[imageCount];
-		for(int i=0;i<imageCount;i++){
-			temp->keys[i].flag=-1;
+		for (int i = 0; i < imageCount; i++){
+			temp->keys[i].flag = -1;
 		}
-		temp->renderer=img->renderer;
-		temp->imageCount=imageCount;
-		temp->images=new Image*[imageCount];
+		temp->renderer = img->renderer;
+		temp->imageCount = imageCount;
+		temp->images = new Image*[imageCount];
 		temp->images[0] = new Image();
 		temp->images[0]->renderer = img->renderer;
 		temp->images[0]->surface = img->surface;
 		temp->images[0]->texture = img->texture;
-		img->surface->count+=1;
-		img->texture->count+=1;
+		img->surface->count += 1;
+		img->texture->count += 1;
 		temp->dstrect = new SDL_Rect();
-		temp->dstrect->w=temp->images[0]->surface->s->w;
-		temp->dstrect->h=temp->images[0]->surface->s->h;
-		temp->center->x=temp->images[0]->surface->s->w/2;
-		temp->center->y=temp->images[0]->surface->s->h/2;
-		temp->dstrect->x=0;
-		temp->dstrect->y=0;
-		temp->nextImage=1;
-		
-		if(zero==NULL){
-			zero = new PriList();
-			zero->priority=0;
-			zero->next=temp;
-		}else{
-			Sprite* temp2;
-			temp2=zero->next;
-			if(temp2!=NULL){
-				temp2->prev=temp;
-			}
-			zero->next=temp;
-			temp->next=temp2;
+		temp->dstrect->w = temp->images[0]->surface->s->w;
+		temp->dstrect->h = temp->images[0]->surface->s->h;
+		temp->center->x = temp->images[0]->surface->s->w / 2;
+		temp->center->y = temp->images[0]->surface->s->h / 2;
+		temp->dstrect->x = 0;
+		temp->dstrect->y = 0;
+		temp->nextImage = 1;
+
+		if (ssd->zero == NULL){
+			ssd->zero = new PriList();
+			ssd->zero->priority = 0;
+			ssd->zero->next = temp;
 		}
-		temp->priList=zero;
+		else{
+			Sprite* temp2;
+			temp2 = ssd->zero->next;
+			if (temp2 != NULL){
+				temp2->prev = temp;
+			}
+			ssd->zero->next = temp;
+			temp->next = temp2;
+		}
+		temp->priList = ssd->zero;
 
 		return temp;
-	}else{
+	}
+	else{
 		return NULL;
 	}
 
 }
 
 
-void Sprite::setImageColorKey(int image,bool flag,Uint8 R,Uint8 G,Uint8 B){ //sets color key for image in sprite //all good assuming that images are never shared
+void Sprite::setImageColorKey(int image, bool flag, Uint8 R, Uint8 G, Uint8 B){ //sets color key for image in sprite //all good assuming that images are never shared
 	Image* temp;
 	Uint32 colorKey;
 	int oldFlag;
-	if(image<0){
-		for(image=0;image<nextImage;image++){
+	if (image < 0){
+		for (image = 0; image < nextImage; image++){
 			temp = new Image();
-			temp->renderer=images[image]->renderer;
-			temp->surface=images[image]->surface;
-			temp->surface->count+=1;
-			oldFlag = SDL_GetColorKey(images[image]->surface->s,&colorKey);
-			if(flag){
-				SDL_SetColorKey(images[image]->surface->s,SDL_TRUE,SDL_MapRGB(images[image]->surface->s->format,R,G,B));
-				keys[image].flag=0;
-				keys[image].colorKey=SDL_MapRGB(images[image]->surface->s->format,R,G,B);
-			}else{
-				SDL_SetColorKey(images[image]->surface->s,SDL_FALSE,SDL_MapRGB(images[image]->surface->s->format,R,G,B));
-				keys[image].flag=-1;
+			temp->renderer = images[image]->renderer;
+			temp->surface = images[image]->surface;
+			temp->surface->count += 1;
+			oldFlag = SDL_GetColorKey(images[image]->surface->s, &colorKey);
+			if (flag){
+				SDL_SetColorKey(images[image]->surface->s, SDL_TRUE, SDL_MapRGB(images[image]->surface->s->format, R, G, B));
+				keys[image].flag = 0;
+				keys[image].colorKey = SDL_MapRGB(images[image]->surface->s->format, R, G, B);
 			}
-			temp->texture=new Texture(SDL_CreateTextureFromSurface(renderer,images[image]->surface->s));
-			if(oldFlag==0){
-				SDL_SetColorKey(images[image]->surface->s,SDL_TRUE,colorKey);
-			}else{
-				SDL_SetColorKey(images[image]->surface->s,SDL_FALSE,colorKey);
+			else{
+				SDL_SetColorKey(images[image]->surface->s, SDL_FALSE, SDL_MapRGB(images[image]->surface->s->format, R, G, B));
+				keys[image].flag = -1;
+			}
+			temp->texture = new Texture(SDL_CreateTextureFromSurface(renderer, images[image]->surface->s));
+			if (oldFlag == 0){
+				SDL_SetColorKey(images[image]->surface->s, SDL_TRUE, colorKey);
+			}
+			else{
+				SDL_SetColorKey(images[image]->surface->s, SDL_FALSE, colorKey);
 			}
 			//destroy old Image
 			decSurface(images[image]->surface);
@@ -222,157 +232,167 @@ void Sprite::setImageColorKey(int image,bool flag,Uint8 R,Uint8 G,Uint8 B){ //se
 			//set new image as the one to be used
 			images[image] = temp;
 		}
-	}else{
+	}
+	else{
 		temp = new Image();
-		temp->renderer=images[image]->renderer;
-		temp->surface=images[image]->surface;
-		temp->surface->count+=1;
-		oldFlag = SDL_GetColorKey(images[image]->surface->s,&colorKey);
-		if(flag){
-			SDL_SetColorKey(images[image]->surface->s,SDL_TRUE,SDL_MapRGB(images[image]->surface->s->format,R,G,B));
-			keys[image].flag=0;
-			keys[image].colorKey=SDL_MapRGB(images[image]->surface->s->format,R,G,B);
-		}else{
-			SDL_SetColorKey(images[image]->surface->s,SDL_FALSE,SDL_MapRGB(images[image]->surface->s->format,R,G,B));
-			keys[image].flag=-1;
+		temp->renderer = images[image]->renderer;
+		temp->surface = images[image]->surface;
+		temp->surface->count += 1;
+		oldFlag = SDL_GetColorKey(images[image]->surface->s, &colorKey);
+		if (flag){
+			SDL_SetColorKey(images[image]->surface->s, SDL_TRUE, SDL_MapRGB(images[image]->surface->s->format, R, G, B));
+			keys[image].flag = 0;
+			keys[image].colorKey = SDL_MapRGB(images[image]->surface->s->format, R, G, B);
 		}
-		temp->texture=new Texture(SDL_CreateTextureFromSurface(renderer,images[image]->surface->s));
-		if(oldFlag==0){
-			SDL_SetColorKey(images[image]->surface->s,SDL_TRUE,colorKey);
-		}else{
-			SDL_SetColorKey(images[image]->surface->s,SDL_FALSE,colorKey);
+		else{
+			SDL_SetColorKey(images[image]->surface->s, SDL_FALSE, SDL_MapRGB(images[image]->surface->s->format, R, G, B));
+			keys[image].flag = -1;
+		}
+		temp->texture = new Texture(SDL_CreateTextureFromSurface(renderer, images[image]->surface->s));
+		if (oldFlag == 0){
+			SDL_SetColorKey(images[image]->surface->s, SDL_TRUE, colorKey);
+		}
+		else{
+			SDL_SetColorKey(images[image]->surface->s, SDL_FALSE, colorKey);
 		}
 		//destroy old Image
 		decSurface(images[image]->surface);
 		decTexture(images[image]->texture);
 		delete images[image];
 		//set new image as the one to be used
-		images[image] = temp;	
+		images[image] = temp;
 	}
 }
 
 void Sprite::setPriority(int pri){//good
-	PriList* current=zero;
+	if (ssd){
+		PriList* current = ssd->zero;
 
-	if(pri<current->priority){
-		current=new PriList();
-		current->priority=pri;
-		current->nextHigher=zero;
-		zero=current;
+		if (pri < current->priority){
+			current = new PriList();
+			current->priority = pri;
+			current->nextHigher = ssd->zero;
+			ssd->zero = current;
 
-		clearFromList();
+			clearFromList();
 
-		current->next=this;
-		prev=NULL;
-		next=NULL;
-		priList=current;
+			current->next = this;
+			prev = NULL;
+			next = NULL;
+			priList = current;
 
-		return;
-	}
-	
-	while(current->nextHigher!=NULL){
-		if(current->nextHigher->priority<=pri){
-			current = current->nextHigher;
-		}else{
-			break;
+			return;
 		}
-	}
-	if(current->priority==pri){
-		clearFromList();
-		next = current->next;
-		next->prev=this;
-		prev=NULL;
-		priList=current;
-		current->next=this;
 
-	}else{
+		while (current->nextHigher != NULL){
+			if (current->nextHigher->priority <= pri){
+				current = current->nextHigher;
+			}
+			else{
+				break;
+			}
+		}
+		if (current->priority == pri){
+			clearFromList();
+			next = current->next;
+			next->prev = this;
+			prev = NULL;
+			priList = current;
+			current->next = this;
 
-		current->nextHigher=new PriList();
-		current = current->nextHigher;
-		current->priority = pri;
-		current->nextHigher = NULL;
+		}
+		else{
 
-		clearFromList();
+			current->nextHigher = new PriList();
+			current = current->nextHigher;
+			current->priority = pri;
+			current->nextHigher = NULL;
 
-		current->next=this;
-		prev = NULL;
-		next = NULL;
-		priList = current;
+			clearFromList();
+
+			current->next = this;
+			prev = NULL;
+			next = NULL;
+			priList = current;
 
 
+		}
 	}
 
 }
 
 
 void Sprite::renderSprites(){//good don't multithread this
-	static int count=framesToAverage;
-	static clock_t oldTime=clock(),period=0;
-	PriList* currentL;
-	Sprite* currentS;
-	RenderLink* temp = NULL;
-	currentL=zero;
+	if (ssd){
+		static int count = ssd->framesToAverage;
+		static clock_t oldTime = clock(), period = 0;
+		PriList* currentL;
+		Sprite* currentS;
+		RenderLink* temp = NULL;
+		currentL = ssd->zero;
 
-	count++;
-	if(count>framesToAverage-1){
-		count=0;
-		period = clock()-oldTime;
-		fps = (CLOCKS_PER_SEC/((double)period))*framesToAverage;
-		oldTime=clock();
+		count++;
+		if (count > ssd->framesToAverage - 1){
+			count = 0;
+			period = clock() - oldTime;
+			ssd->fps = (CLOCKS_PER_SEC / ((double)period))*ssd->framesToAverage;
+			oldTime = clock();
 
-		if(period<CLOCKS_PER_SEC/200){
-			framesToAverage++;
+			if (period < CLOCKS_PER_SEC / 200){
+				ssd->framesToAverage++;
+			}
+			if (period > CLOCKS_PER_SEC / 50){
+				ssd->framesToAverage--;
+			}
 		}
-		if(period>CLOCKS_PER_SEC/50){
-			framesToAverage--;
-		}
-	}
-	
-	while(currentL!=NULL){
-		currentS=currentL->next;
-		while(currentS!=NULL){
-			if(currentS->vis){
-				currentS->animUD();
-				SDL_RenderCopyEx(currentS->renderer, currentS->images[currentS->curImage]->texture->t, currentS->srcrect, currentS->dstrect,currentS->angle,currentS->center,currentS->flip); //add textures to the appropriate renderers.
-				if(temp==NULL){
-					temp = new RenderLink();
-					temp->rend=currentS->renderer;
-				}else{
-					RenderLink* current = temp;
-					bool notFound=true;
-					while(current!=NULL){
-						if(current->rend == currentS->renderer)
-							notFound = false;
-						current = current->next;
-					}
-					if(notFound){
-						RenderLink* temp2 = temp;
+
+		while (currentL != NULL){
+			currentS = currentL->next;
+			while (currentS != NULL){
+				if (currentS->vis){
+					currentS->animUD();
+					SDL_RenderCopyEx(currentS->renderer, currentS->images[currentS->curImage]->texture->t, currentS->srcrect, currentS->dstrect, currentS->angle, currentS->center, currentS->flip); //add textures to the appropriate renderers.
+					if (temp == NULL){
 						temp = new RenderLink();
-						temp->rend=currentS->renderer;
-						temp->next=temp2;
+						temp->rend = currentS->renderer;
+					}
+					else{
+						RenderLink* current = temp;
+						bool notFound = true;
+						while (current != NULL){
+							if (current->rend == currentS->renderer)
+								notFound = false;
+							current = current->next;
+						}
+						if (notFound){
+							RenderLink* temp2 = temp;
+							temp = new RenderLink();
+							temp->rend = currentS->renderer;
+							temp->next = temp2;
+						}
 					}
 				}
+				currentS = currentS->next;
 			}
-			currentS=currentS->next;
+			currentL = currentL->nextHigher;
 		}
-		currentL=currentL->nextHigher;
-	}
-	RenderLink* current = temp;
-	RenderLink* del;
-	while(current!=NULL){//render all frames
-		SDL_RenderPresent(current->rend);
-		del = current;
-		current = current->next;
-		delete del;
+		RenderLink* current = temp;
+		RenderLink* del;
+		while (current != NULL){//render all frames
+			SDL_RenderPresent(current->rend);
+			del = current;
+			current = current->next;
+			delete del;
+		}
 	}
 }
 
 void Sprite::addImage(std::string bmp){//good
 
-	if(nextImage<imageCount){
+	if (nextImage < imageCount){
 		images[nextImage] = new Image();
-		images[nextImage]->surface=new Surface(SDL_LoadBMP(bmp.c_str()));
-		images[nextImage]->texture=new Texture(SDL_CreateTextureFromSurface(renderer,images[nextImage]->surface->s));
+		images[nextImage]->surface = new Surface(SDL_LoadBMP(bmp.c_str()));
+		images[nextImage]->texture = new Texture(SDL_CreateTextureFromSurface(renderer, images[nextImage]->surface->s));
 		images[nextImage]->renderer = renderer;
 		nextImage++;
 	}
@@ -381,21 +401,22 @@ void Sprite::addImage(std::string bmp){//good
 
 void Sprite::addImage(Image* img){//good
 
-	if(nextImage<imageCount){
-		if(img->renderer!=renderer){
+	if (nextImage < imageCount){
+		if (img->renderer != renderer){
 			images[nextImage] = new Image();
 			images[nextImage]->renderer = renderer;
 			images[nextImage]->surface = img->surface;
-			images[nextImage]->surface->count+=1;
-			images[nextImage]->texture=new Texture(SDL_CreateTextureFromSurface(renderer,images[nextImage]->surface->s));
-		}else{
+			images[nextImage]->surface->count += 1;
+			images[nextImage]->texture = new Texture(SDL_CreateTextureFromSurface(renderer, images[nextImage]->surface->s));
+		}
+		else{
 			images[nextImage] = img;
 			images[nextImage] = new Image();
 			images[nextImage]->renderer = renderer;
 			images[nextImage]->surface = img->surface;
 			images[nextImage]->texture = img->texture;
-			img->surface->count+=1;
-			img->texture->count+=1;
+			img->surface->count += 1;
+			img->texture->count += 1;
 		}
 		nextImage++;
 	}
@@ -403,159 +424,162 @@ void Sprite::addImage(Image* img){//good
 }
 
 Sprite* Sprite::cloneSprite(Sprite* original){//good
-	if(original!=NULL){
+	if (ssd && original != NULL){
 		Sprite* temp = new Sprite();
 		temp->keys = new ColorKey[original->imageCount];
-		for(int i=0;i<original->imageCount;i++){
-			temp->keys[i].flag=original->keys[i].flag;
-			temp->keys[i].colorKey=original->keys[i].colorKey;
+		for (int i = 0; i < original->imageCount; i++){
+			temp->keys[i].flag = original->keys[i].flag;
+			temp->keys[i].colorKey = original->keys[i].colorKey;
 		}
-		temp->renderer=original->renderer;
-		temp->imageCount=original->imageCount;
-		temp->images=new Image*[original->imageCount];
-		for(int i=0;i<original->imageCount;i++){
-			temp->images[i]=new Image();
-			temp->images[i]->renderer=original->images[i]->renderer;
-			temp->images[i]->surface=original->images[i]->surface;
-			temp->images[i]->texture=original->images[i]->texture;
-			temp->images[i]->surface->count+=1;
-			temp->images[i]->texture->count+=1;
+		temp->renderer = original->renderer;
+		temp->imageCount = original->imageCount;
+		temp->images = new Image*[original->imageCount];
+		for (int i = 0; i < original->imageCount; i++){
+			temp->images[i] = new Image();
+			temp->images[i]->renderer = original->images[i]->renderer;
+			temp->images[i]->surface = original->images[i]->surface;
+			temp->images[i]->texture = original->images[i]->texture;
+			temp->images[i]->surface->count += 1;
+			temp->images[i]->texture->count += 1;
 		}
-		temp->nextImage=original->nextImage;
+		temp->nextImage = original->nextImage;
 
 		temp->dstrect = new SDL_Rect();
-		temp->dstrect->w=original->dstrect->w;
-		temp->dstrect->h=original->dstrect->h;
-		temp->dstrect->x=original->dstrect->x;
-		temp->dstrect->y=original->dstrect->y;
-		
-		if(original->srcrect!=NULL){
+		temp->dstrect->w = original->dstrect->w;
+		temp->dstrect->h = original->dstrect->h;
+		temp->dstrect->x = original->dstrect->x;
+		temp->dstrect->y = original->dstrect->y;
+
+		if (original->srcrect != NULL){
 			temp->srcrect = new SDL_Rect();
-			temp->srcrect->w=original->srcrect->w;
-			temp->srcrect->h=original->srcrect->h;
-			temp->srcrect->x=original->srcrect->x;
-			temp->srcrect->y=original->srcrect->y;
+			temp->srcrect->w = original->srcrect->w;
+			temp->srcrect->h = original->srcrect->h;
+			temp->srcrect->x = original->srcrect->x;
+			temp->srcrect->y = original->srcrect->y;
 		}
-		temp->center->x=original->center->x;
-		temp->center->y=original->center->y;
+		temp->center->x = original->center->x;
+		temp->center->y = original->center->y;
 		Sprite* temp2;
-		temp2=zero->next;
-		zero->next=temp;
-		temp->next=temp2;
-		
-		temp->priList=zero;
+		temp2 = ssd->zero->next;
+		ssd->zero->next = temp;
+		temp->next = temp2;
+
+		temp->priList = ssd->zero;
 
 		temp->setPriority(original->priList->priority);
 		return temp;
-	}else{
+	}
+	else{
 		return NULL;
 	}
 }
 
 
-Sprite* Sprite::cloneSprite(Sprite* original,SDL_Renderer* renderer){//good
-	if(original!=NULL){
+Sprite* Sprite::cloneSprite(Sprite* original, SDL_Renderer* renderer){//good
+	if (ssd && original != NULL){
 		Sprite* temp = new Sprite();
-		temp->renderer=renderer;
-		temp->imageCount=original->imageCount;
-		temp->images=new Image*[original->imageCount];
-		for(int i=0;i<original->imageCount;i++){
-			temp->images[i]=new Image();
-			temp->images[i]->renderer=renderer;
-			temp->images[i]->surface=original->images[i]->surface;
-			temp->images[i]->surface->count+=1;
-			temp->images[i]->texture=new Texture(SDL_CreateTextureFromSurface(renderer,temp->images[i]->surface->s));
+		temp->renderer = renderer;
+		temp->imageCount = original->imageCount;
+		temp->images = new Image*[original->imageCount];
+		for (int i = 0; i < original->imageCount; i++){
+			temp->images[i] = new Image();
+			temp->images[i]->renderer = renderer;
+			temp->images[i]->surface = original->images[i]->surface;
+			temp->images[i]->surface->count += 1;
+			temp->images[i]->texture = new Texture(SDL_CreateTextureFromSurface(renderer, temp->images[i]->surface->s));
 		}
-		temp->nextImage=original->nextImage;
+		temp->nextImage = original->nextImage;
 
 		temp->dstrect = new SDL_Rect();
-		temp->dstrect->w=original->dstrect->w;
-		temp->dstrect->h=original->dstrect->h;
-		temp->dstrect->x=original->dstrect->x;
-		temp->dstrect->y=original->dstrect->y;
-		
-		if(original->srcrect!=NULL){
+		temp->dstrect->w = original->dstrect->w;
+		temp->dstrect->h = original->dstrect->h;
+		temp->dstrect->x = original->dstrect->x;
+		temp->dstrect->y = original->dstrect->y;
+
+		if (original->srcrect != NULL){
 			temp->srcrect = new SDL_Rect();
-			temp->srcrect->w=original->srcrect->w;
-			temp->srcrect->h=original->srcrect->h;
-			temp->srcrect->x=original->srcrect->x;
-			temp->srcrect->y=original->srcrect->y;
+			temp->srcrect->w = original->srcrect->w;
+			temp->srcrect->h = original->srcrect->h;
+			temp->srcrect->x = original->srcrect->x;
+			temp->srcrect->y = original->srcrect->y;
 		}
-		
+
 		Sprite* temp2;
-		temp2=zero->next;
-		zero->next=temp;
-		temp->next=temp2;
-		
-		temp->priList=zero;
+		temp2 = ssd->zero->next;
+		ssd->zero->next = temp;
+		temp->next = temp2;
+
+		temp->priList = ssd->zero;
 
 		temp->setPriority(original->priList->priority);
 		return temp;
-	}else{
+	}
+	else{
 		return NULL;
 	}
 }
 
 
 void Sprite::deleteSprite(Sprite* sprite){//bad
-	
-		sprite->clearFromList();
-		sprite->disableRelative();
 
-		delete[] (sprite->keys);
-		delete (sprite->dstrect);
-		delete (sprite->srcrect);
-		delete (sprite->center);
+	sprite->clearFromList();
+	sprite->disableRelative();
 
-		SpriteCont* temp = sprite->relFirst, *temp2;
-		while(temp!=NULL){ //disable all the relative child sprites
-			temp2 = temp->next;
-			temp->sprite->disableRelative();
-			temp = temp2;
-		}
-		for(int i=0;i<sprite->nextImage;i++){//delete all images  (or dec the use count)
-			decTexture(sprite->images[i]->texture);
-			decSurface(sprite->images[i]->surface);
-			delete (sprite->images[i]);
-		}
-		delete[] (sprite->images);
+	delete[](sprite->keys);
+	delete (sprite->dstrect);
+	delete (sprite->srcrect);
+	delete (sprite->center);
 
-		delete sprite;
+	SpriteCont* temp = sprite->relFirst, *temp2;
+	while (temp != NULL){ //disable all the relative child sprites
+		temp2 = temp->next;
+		temp->sprite->disableRelative();
+		temp = temp2;
+	}
+	for (int i = 0; i < sprite->nextImage; i++){//delete all images  (or dec the use count)
+		decTexture(sprite->images[i]->texture);
+		decSurface(sprite->images[i]->surface);
+		delete (sprite->images[i]);
+	}
+	delete[](sprite->images);
+
+	delete sprite;
 
 }
 
 Parr* Sprite::rectCol(Sprite* obj){//doesn't check verticies or for angled collisions //good
-	Parr* inters=new Parr();       //IMPORTANT!!! DELETE THE Parr* AFTER USE!!!!
+	Parr* inters = new Parr();       //IMPORTANT!!! DELETE THE Parr* AFTER USE!!!!
 	Point* temp;
-	if(temp=intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y))){
+	if (temp = intersection(Point(dstrect->x, dstrect->y), Point(dstrect->x, dstrect->y + dstrect->h), Point(obj->dstrect->x, obj->dstrect->y), Point(obj->dstrect->x + obj->dstrect->w, obj->dstrect->y))){
 		inters->add(temp);
 	}
-	if(temp=intersection(Point(dstrect->x+dstrect->w,dstrect->y),Point(dstrect->x+dstrect->w,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y))){
+	if (temp = intersection(Point(dstrect->x + dstrect->w, dstrect->y), Point(dstrect->x + dstrect->w, dstrect->y + dstrect->h), Point(obj->dstrect->x, obj->dstrect->y), Point(obj->dstrect->x + obj->dstrect->w, obj->dstrect->y))){
 		inters->add(temp);
 	}
-	if(temp=intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y+obj->dstrect->h),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y+obj->dstrect->h))){
+	if (temp = intersection(Point(dstrect->x, dstrect->y), Point(dstrect->x, dstrect->y + dstrect->h), Point(obj->dstrect->x, obj->dstrect->y + obj->dstrect->h), Point(obj->dstrect->x + obj->dstrect->w, obj->dstrect->y + obj->dstrect->h))){
 		inters->add(temp);
 	}
-	if(temp=intersection(Point(dstrect->x+dstrect->w,dstrect->y),Point(dstrect->x+dstrect->w,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y+obj->dstrect->h),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y+obj->dstrect->h))){
+	if (temp = intersection(Point(dstrect->x + dstrect->w, dstrect->y), Point(dstrect->x + dstrect->w, dstrect->y + dstrect->h), Point(obj->dstrect->x, obj->dstrect->y + obj->dstrect->h), Point(obj->dstrect->x + obj->dstrect->w, obj->dstrect->y + obj->dstrect->h))){
 		inters->add(temp);
 		//
 	}
-	if(temp=intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x+dstrect->w,dstrect->y),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x,obj->dstrect->y+obj->dstrect->h))){
+	if (temp = intersection(Point(dstrect->x, dstrect->y), Point(dstrect->x + dstrect->w, dstrect->y), Point(obj->dstrect->x, obj->dstrect->y), Point(obj->dstrect->x, obj->dstrect->y + obj->dstrect->h))){
 		inters->add(temp);
 	}
-	if(temp=intersection(Point(dstrect->x,dstrect->y+dstrect->h),Point(dstrect->x+dstrect->w,dstrect->y+dstrect->h),Point(obj->dstrect->x,obj->dstrect->y),Point(obj->dstrect->x,obj->dstrect->y+obj->dstrect->h))){
+	if (temp = intersection(Point(dstrect->x, dstrect->y + dstrect->h), Point(dstrect->x + dstrect->w, dstrect->y + dstrect->h), Point(obj->dstrect->x, obj->dstrect->y), Point(obj->dstrect->x, obj->dstrect->y + obj->dstrect->h))){
 		inters->add(temp);
 	}
-	if(temp=intersection(Point(dstrect->x,dstrect->y),Point(dstrect->x+dstrect->w,dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y+obj->dstrect->h))){
+	if (temp = intersection(Point(dstrect->x, dstrect->y), Point(dstrect->x + dstrect->w, dstrect->y), Point(obj->dstrect->x + obj->dstrect->w, obj->dstrect->y), Point(obj->dstrect->x + obj->dstrect->w, obj->dstrect->y + obj->dstrect->h))){
 		inters->add(temp);
 	}
-	if(temp=intersection(Point(dstrect->x,dstrect->y+dstrect->h),Point(dstrect->x+dstrect->w,dstrect->y+dstrect->h),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y),Point(obj->dstrect->x+obj->dstrect->w,obj->dstrect->y+obj->dstrect->h))){
+	if (temp = intersection(Point(dstrect->x, dstrect->y + dstrect->h), Point(dstrect->x + dstrect->w, dstrect->y + dstrect->h), Point(obj->dstrect->x + obj->dstrect->w, obj->dstrect->y), Point(obj->dstrect->x + obj->dstrect->w, obj->dstrect->y + obj->dstrect->h))){
 		inters->add(temp);
 	}
-	if(inters->pointC==0){
+	if (inters->pointC == 0){
 		delete inters;
 		return NULL;
-	}else{
+	}
+	else{
 		return inters;
 	}
 }
@@ -564,235 +588,284 @@ ColState Sprite::autoCol(Sprite* obj){//good
 	Parr* points;
 	ColState state;
 	points = rectCol(obj);
-	if(points == NULL){
+	if (points == NULL){
 		return NONE;
-	}else if(points->pointC>=2){
-		Point center(obj->dstrect->x+(obj->dstrect->w)/2,obj->dstrect->y+(obj->dstrect->h)/2);
+	}
+	else if (points->pointC >= 2){
+		Point center(obj->dstrect->x + (obj->dstrect->w) / 2, obj->dstrect->y + (obj->dstrect->h) / 2);
 
-		if(points->arr[0]->x==points->arr[1]->x){
-			if(points->arr[0]->x>center.x){
-				moveTo(obj->dstrect->x+obj->dstrect->w+1,Y());
-				state=OBJ_LEFT;
-			}else{
-				moveTo(obj->dstrect->x-dstrect->w-1,Y());
-				state=OBJ_RIGHT;
+		if (points->arr[0]->x == points->arr[1]->x){
+			if (points->arr[0]->x > center.x){
+				moveTo(obj->dstrect->x + obj->dstrect->w + 1, Y());
+				state = OBJ_LEFT;
 			}
-		}else if(points->arr[0]->y==points->arr[1]->y){
-			if(points->arr[0]->y>center.y){
-				moveTo(X(),obj->dstrect->y+obj->dstrect->h+1);
-				state=OBJ_UP;
-			}else{
-				moveTo(X(),obj->dstrect->y-dstrect->h-1);
-				state=OBJ_DOWN;
+			else{
+				moveTo(obj->dstrect->x - dstrect->w - 1, Y());
+				state = OBJ_RIGHT;
 			}
-		}else if(abs(points->arr[0]->x-points->arr[1]->x) >= abs(points->arr[0]->y - points->arr[1]->y)){
-			if((points->arr[0]->y+points->arr[1]->y)/2>center.y){
-				moveTo(X(),obj->dstrect->y+obj->dstrect->h+1);
-				state=OBJ_UP;
-			}else{
-				moveTo(X(),obj->dstrect->y-dstrect->h-1);
-				state=OBJ_DOWN;
+		}
+		else if (points->arr[0]->y == points->arr[1]->y){
+			if (points->arr[0]->y > center.y){
+				moveTo(X(), obj->dstrect->y + obj->dstrect->h + 1);
+				state = OBJ_UP;
 			}
-		}else{
-			if((points->arr[0]->x+points->arr[1]->x)/2>center.x){
-				moveTo(obj->dstrect->x+obj->dstrect->w+1,Y());
-				state=OBJ_LEFT;
-			}else{
-				moveTo(obj->dstrect->x-dstrect->w-1,Y());
-				state=OBJ_RIGHT;
+			else{
+				moveTo(X(), obj->dstrect->y - dstrect->h - 1);
+				state = OBJ_DOWN;
+			}
+		}
+		else if (abs(points->arr[0]->x - points->arr[1]->x) >= abs(points->arr[0]->y - points->arr[1]->y)){
+			if ((points->arr[0]->y + points->arr[1]->y) / 2 > center.y){
+				moveTo(X(), obj->dstrect->y + obj->dstrect->h + 1);
+				state = OBJ_UP;
+			}
+			else{
+				moveTo(X(), obj->dstrect->y - dstrect->h - 1);
+				state = OBJ_DOWN;
+			}
+		}
+		else{
+			if ((points->arr[0]->x + points->arr[1]->x) / 2 > center.x){
+				moveTo(obj->dstrect->x + obj->dstrect->w + 1, Y());
+				state = OBJ_LEFT;
+			}
+			else{
+				moveTo(obj->dstrect->x - dstrect->w - 1, Y());
+				state = OBJ_RIGHT;
 			}
 		}
 		delete points;
 		return state;
-	}else{
+	}
+	else{
 		delete points;
 		return NONE;
 	}
 }
 
 void Sprite::animUD(){//good
-	if(animate){
-		frameCounter+=targetfps/fps;
-		if(frameCounter>=fpf){
-			frameCounter=0;
+	if (ssd && animate){
+		frameCounter += ssd->targetfps / ssd->fps;
+		if (frameCounter >= fpf){
+			frameCounter = 0;
 			curImage++;
-			if(curImage>endF){
-				curImage=startF;
-				if(!loop)
-					animate=false;
+			if (curImage > endF){
+				curImage = startF;
+				if (!loop)
+					animate = false;
 			}
 		}
 	}
 }
 
-void Sprite::moveTo(double newX,double newY,bool abs){//good
-	double diffx,diffy;
-	diffx=X()-newX;
-	diffy=Y()-newY;
-	if(abs){
-		this->x=newX;this->y=newY;dstrect->x=(int)newX;dstrect->y=(int)newY;
+void Sprite::moveTo(double newX, double newY, bool abs){//good
+
+	double diffx, diffy;
+	diffx = X() - newX;
+	diffy = Y() - newY;
+	if (abs){
+		this->x = newX; this->y = newY; dstrect->x = (int)newX; dstrect->y = (int)newY;
 		SpriteCont* temp = relFirst;
-		while(temp!=NULL){
-			temp->sprite->moveTo(temp->sprite->X()-diffx,temp->sprite->Y()-diffy);
-			temp=temp->next;
+		while (temp != NULL){
+			temp->sprite->moveTo(temp->sprite->X() - diffx, temp->sprite->Y() - diffy);
+			temp = temp->next;
 		}
-	}else{
-		this->x-=diffx*(targetfps/fps);this->y-=diffy*(targetfps/fps);dstrect->x=(int)(this->x);dstrect->y=(int)(this->y);
+	}
+	else if (ssd){
+		this->x -= diffx*(ssd->targetfps / ssd->fps); this->y -= diffy*(ssd->targetfps / ssd->fps); dstrect->x = (int)(this->x); dstrect->y = (int)(this->y);
 		SpriteCont* temp = relFirst;
-		while(temp!=NULL){
-			temp->sprite->moveTo(temp->sprite->X()-diffx,temp->sprite->Y()-diffy,false);
-			temp=temp->next;
+		while (temp != NULL){
+			temp->sprite->moveTo(temp->sprite->X() - diffx, temp->sprite->Y() - diffy, false);
+			temp = temp->next;
 		}
 
 	}
-	
+
 }
 
-void Sprite::setRelative(Sprite* host,bool sameRotCenter){//good
+void Sprite::setRelative(Sprite* host, bool sameRotCenter){//good
 	this->disableRelative();
-	if(host!=NULL){
+	if (host != NULL){
 		SpriteCont* temp;
-		temp=host->relFirst;
-		host->relFirst=new SpriteCont();
-		host->relFirst->next=temp;
-		host->relFirst->sprite=this;
-		this->host=host;
-		if(sameRotCenter){
-			this->setRotCenter((int)(host->rotCentX()+(host->X()-x)),(int)(host->rotCentY()+(host->Y()-y)));
+		temp = host->relFirst;
+		host->relFirst = new SpriteCont();
+		host->relFirst->next = temp;
+		host->relFirst->sprite = this;
+		this->host = host;
+		if (sameRotCenter){
+			this->setRotCenter((int)(host->rotCentX() + (host->X() - x)), (int)(host->rotCentY() + (host->Y() - y)));
 		}
 	}
 }
 void Sprite::disableRelative(){//good
-	if(host!=NULL){
-		SpriteCont* temp,*prev;
-		temp=host->relFirst;
-		prev=NULL;
-		while(temp->sprite!=this){
-			prev=temp;
-			temp=temp->next;
+	if (host != NULL){
+		SpriteCont* temp, *prev;
+		temp = host->relFirst;
+		prev = NULL;
+		while (temp->sprite != this){
+			prev = temp;
+			temp = temp->next;
 		}
-		if(prev==NULL){
-			host->relFirst=temp->next;
-			delete temp;
-		}else{
-			prev->next=temp->next;
+		if (prev == NULL){
+			host->relFirst = temp->next;
 			delete temp;
 		}
+		else{
+			prev->next = temp->next;
+			delete temp;
+		}
 	}
-	host=NULL;
+	host = NULL;
 }
 
-void Sprite::setAngle(double angle,bool abs){//bad
-	double diff = this->angle-angle;
-	if(abs){
-		this->angle=angle;
+void Sprite::setAngle(double angle, bool abs){//bad
+	double diff = this->angle - angle;
+	if (abs){
+		this->angle = angle;
 		SpriteCont* temp = relFirst;
-		while(temp!=NULL){
-			temp->sprite->setAngle(temp->sprite->getAngle()-diff);
-			temp=temp->next;
+		while (temp != NULL){
+			temp->sprite->setAngle(temp->sprite->getAngle() - diff);
+			temp = temp->next;
 		}
-	}else{
-		this->angle-=diff*(targetfps/fps);
+	}
+	else if (ssd){
+		this->angle -= diff*(ssd->targetfps / ssd->fps);
 		SpriteCont* temp = relFirst;
-		while(temp!=NULL){
-			temp->sprite->setAngle(temp->sprite->getAngle()-diff,false);
-			temp=temp->next;
+		while (temp != NULL){
+			temp->sprite->setAngle(temp->sprite->getAngle() - diff, false);
+			temp = temp->next;
 		}
 
 	}
 }
 
-Image* Sprite::loadImage(std::string bmp,SDL_Renderer* renderer){//good
-	if(renderer!=NULL){
-		Image* temp = new Image();
-		temp->surface=new Surface(SDL_LoadBMP(bmp.c_str()));
-		temp->texture=new Texture(SDL_CreateTextureFromSurface(renderer,temp->surface->s));
-		temp->renderer = renderer;
-		temp->texture->user=true;
-		temp->surface->user=true;
-		return temp;
+Image* Sprite::loadImage(std::string bmp, SDL_Renderer* renderer){//good
+	if (renderer == NULL){
+		if (ssd){
+			renderer = ssd->defaultRenderer;
+		}
+		else{
+			return NULL;
+		}
 	}
-	return NULL;
+	Image* temp = new Image();
+	temp->surface = new Surface(SDL_LoadBMP(bmp.c_str()));
+	temp->texture = new Texture(SDL_CreateTextureFromSurface(renderer, temp->surface->s));
+	temp->renderer = renderer;
+	temp->texture->user = true;
+	temp->surface->user = true;
+	return temp;
 }
 
 bool Sprite::setAllAlpaMod(Uint8 alpha){//good
-	this->alpha=alpha;
+	this->alpha = alpha;
 	Uint32 colorKey;
 	int oldFlag;
-	for(int i=0;i<nextImage;i++){
+	for (int i = 0; i < nextImage; i++){
 		Image* temp = new Image();
-		temp->surface=images[i]->surface;
-		images[i]->surface->count+=1;
-		temp->renderer=images[i]->renderer;
+		temp->surface = images[i]->surface;
+		images[i]->surface->count += 1;
+		temp->renderer = images[i]->renderer;
 
-		oldFlag = SDL_GetColorKey(images[i]->surface->s,&colorKey);
-		if(keys[i].flag==0){
-			SDL_SetColorKey(images[i]->surface->s,SDL_TRUE,keys[i].colorKey);
-		}else{
-			SDL_SetColorKey(images[i]->surface->s,SDL_FALSE,keys[i].colorKey);
+		oldFlag = SDL_GetColorKey(images[i]->surface->s, &colorKey);
+		if (keys[i].flag == 0){
+			SDL_SetColorKey(images[i]->surface->s, SDL_TRUE, keys[i].colorKey);
 		}
-		temp->texture=new Texture(SDL_CreateTextureFromSurface(temp->renderer,temp->surface->s));
-		if(oldFlag==0){
-			SDL_SetColorKey(images[i]->surface->s,SDL_TRUE,colorKey);
-		}else{
-			SDL_SetColorKey(images[i]->surface->s,SDL_FALSE,colorKey);
+		else{
+			SDL_SetColorKey(images[i]->surface->s, SDL_FALSE, keys[i].colorKey);
 		}
-		if(SDL_SetTextureAlphaMod(temp->texture->t,alpha)==0){
+		temp->texture = new Texture(SDL_CreateTextureFromSurface(temp->renderer, temp->surface->s));
+		if (oldFlag == 0){
+			SDL_SetColorKey(images[i]->surface->s, SDL_TRUE, colorKey);
+		}
+		else{
+			SDL_SetColorKey(images[i]->surface->s, SDL_FALSE, colorKey);
+		}
+		if (SDL_SetTextureAlphaMod(temp->texture->t, alpha) == 0){
 			decSurface(images[i]->surface);
 			decTexture(images[i]->texture);
 			delete images[i];
-			
-			images[i]=temp;
-		}else{
+
+			images[i] = temp;
+		}
+		else{
 			delete temp;
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 
-void Sprite::setDrawRegion(int x,int y,int w,int h){
-	if(srcrect!=NULL){
-		srcrect->x=x;
-		srcrect->y=y;
-		srcrect->w=w;
-		srcrect->h=h;
-	}else{
-		srcrect=new SDL_Rect();
-		srcrect->x=x;
-		srcrect->y=y;
-		srcrect->w=w;
-		srcrect->h=h;
+void Sprite::setDrawRegion(int x, int y, int w, int h){
+	if (srcrect != NULL){
+		srcrect->x = x;
+		srcrect->y = y;
+		srcrect->w = w;
+		srcrect->h = h;
+	}
+	else{
+		srcrect = new SDL_Rect();
+		srcrect->x = x;
+		srcrect->y = y;
+		srcrect->w = w;
+		srcrect->h = h;
 	}
 }
 
 
 int Sprite::getDRX(){
-	if(srcrect!=NULL){
+	if (srcrect != NULL){
 		return srcrect->x;
-	}else{
+	}
+	else{
 		return -1;
 	}
 }
 int Sprite::getDRY(){
-	if(srcrect!=NULL){
+	if (srcrect != NULL){
 		return srcrect->y;
-	}else{
+	}
+	else{
 		return -1;
 	}
 }
 int Sprite::getDRW(){
-	if(srcrect!=NULL){
+	if (srcrect != NULL){
 		return srcrect->w;
-	}else{
+	}
+	else{
 		return -1;
 	}
 }
 int Sprite::getDRH(){
-	if(srcrect!=NULL){
+	if (srcrect != NULL){
 		return srcrect->h;
-	}else{
+	}
+	else{
 		return -1;
 	}
+}
+
+void Sprite::addToList(Sprite* &firstInList){
+	if (firstInList){
+		this->userNext = firstInList;
+		firstInList->userPrev = this;
+		firstInList = this;
+	}
+	else{
+		firstInList = this;
+	}
+}
+Sprite* Sprite::getNext(){
+	return userNext;
+}
+void Sprite::setNext(Sprite* next){
+	userNext = next;
+}
+Sprite* Sprite::getPrev(){
+	return userPrev;
+}
+void Sprite::setPrev(Sprite* prev){
+	userPrev = prev;
 }

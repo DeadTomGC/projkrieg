@@ -41,6 +41,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>..\..\..\SDL2\include;..\projKrieg;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\SDL2\lib\x86;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
+    <SourcePath>..\projKrieg;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -60,6 +63,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2test.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -86,13 +90,16 @@
     <ClInclude Include="..\projKrieg\core.h" />
     <ClInclude Include="..\projKrieg\map.h" />
     <ClInclude Include="..\projKrieg\object.h" />
+    <ClInclude Include="..\projKrieg\SharedSpriteData.h" />
     <ClInclude Include="..\projKrieg\Sprite.h" />
     <ClInclude Include="..\projKrieg\utils.h" />
     <ClInclude Include="background.h" />
     <ClInclude Include="Factory.h" />
     <ClInclude Include="objectTypes.h" />
+    <ClInclude Include="SharedData.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\projKrieg\object.cpp" />
     <ClCompile Include="..\projKrieg\Sprite.cpp" />
     <ClCompile Include="..\projKrieg\utils.cpp" />
     <ClCompile Include="background.cpp" />

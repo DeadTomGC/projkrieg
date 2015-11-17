@@ -1,10 +1,44 @@
-#include "Sprite.h"
-#include "SDL.h"
+#include "core.h"
+#include "KriegMap.h"
 #include <fstream>
 //#include <vld.h>
 
 bool running=true;
+
 int main(int argc, char *argv[]){
+	const Uint8 * m_keystate;
+	int nkeys = 0;
+	double topspeed = 10;
+	double accel = 0.4;
+	double speedx = 0, speedy = 0;
+	double damp = 0.15;
+
+	Sprite::createDefaultWindow("projKrieg", 30, 30, 640, 480, false);
+	Sprite::setTargetFPS(60);
+	KriegMap* map = new KriegMap(200, 200, 640, 480);
+	map->loadMapFromFile("sampleMap.kmap");
+	SDL_GetKeyboardState(&nkeys);
+	m_keystate = SDL_GetKeyboardState(0);
+	while (running){
+		SDL_PumpEvents();
+		//Sprite* sprite4 = Sprite::loadSprite("back.bmp");
+		//Sprite::deleteSprite(sprite4);
+		if (m_keystate[SDL_SCANCODE_ESCAPE] == 1){
+			running = false;
+		}
+		
+		
+		Sprite::renderSprites();
+		SDL_FlushEvents(SDL_QUIT, SDL_DROPFILE);
+	}
+
+	return 0;
+
+}
+
+
+
+int alt_main(int argc, char *argv[]){
 	const Uint8 * m_keystate;
 	int nkeys = 0;
 	double topspeed = 10;

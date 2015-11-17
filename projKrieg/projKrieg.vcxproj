@@ -39,10 +39,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Program Files %28x86%29\Visual Leak Detector\include;..\..\..\SDL\SDL2-2.0.3\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files %28x86%29\Visual Leak Detector\include;..\..\..\SDL2\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>C:\Program Files %28x86%29\Visual Leak Detector\lib\Win32;..\..\..\SDL\SDL2-2.0.3\lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Program Files %28x86%29\Visual Leak Detector\lib\Win32;..\..\..\SDL2\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>..\..\..\SDL2\include;$(IncludePath)</IncludePath>
@@ -80,6 +80,7 @@
     <ClCompile Include="KriegBlock.cpp" />
     <ClCompile Include="KriegMap.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="object.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
@@ -92,6 +93,7 @@
     <ClInclude Include="KriegClasses.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="SharedSpriteData.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>

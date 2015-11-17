@@ -54,6 +54,12 @@
     <ClInclude Include="..\projKrieg\core.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="SharedData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\projKrieg\SharedSpriteData.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Factory.cpp">
@@ -66,6 +72,9 @@
       <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\projKrieg\utils.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\projKrieg\object.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
   </ItemGroup>

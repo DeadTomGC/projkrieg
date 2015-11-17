@@ -34,11 +34,14 @@
     <Filter Include="Resource Files\Test Images">
       <UniqueIdentifier>{1b5b2b7c-84e5-41eb-9e8c-4e06cfb2aad5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Engine\common">
-      <UniqueIdentifier>{fa83da31-bac1-49a1-9544-ae9f71742b4e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Engine\Core">
       <UniqueIdentifier>{35b31ba6-c4f1-46d4-a30d-ec053eaf948d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Shared">
+      <UniqueIdentifier>{fa83da31-bac1-49a1-9544-ae9f71742b4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Core">
+      <UniqueIdentifier>{2e48d251-2ae4-446b-8022-6956e9baa401}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -56,6 +59,9 @@
     </ClCompile>
     <ClCompile Include="KriegBlock.cpp">
       <Filter>Source Files\Engine\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>Source Files\Engine\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -84,7 +90,10 @@
       <Filter>Header Files\Engine\Map</Filter>
     </ClInclude>
     <ClInclude Include="KriegClasses.h">
-      <Filter>Header Files\Engine\common</Filter>
+      <Filter>Header Files\Engine\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="SharedSpriteData.h">
+      <Filter>Header Files\Sprite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

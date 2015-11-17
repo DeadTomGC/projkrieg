@@ -1,10 +1,12 @@
 #pragma once
 #include <string>
-#include "object.h" //add all custom object headers here
+#include "objectTypes.h" //add all custom object headers here
 
-
-__declspec(dllexport) Object* __stdcall getObject(std::string name);
-__declspec(dllexport) Object* __stdcall getObjectByIndex(int index);
-__declspec(dllexport) Object* __stdcall getFirstObject();
-__declspec(dllexport) Object* __stdcall getNextObject();
-__declspec(dllexport) int __stdcall getTypeCount();
+extern "C"{
+	__declspec(dllexport) void setSSD(SharedSpriteData* ssd);
+	__declspec(dllexport) Object* getObject(const std::string &name);
+	__declspec(dllexport) Object* getObjectByIndex(int index);
+	__declspec(dllexport) Object* getFirstObject();
+	__declspec(dllexport) Object* getNextObject();
+	__declspec(dllexport) int getTypeCount();
+}
