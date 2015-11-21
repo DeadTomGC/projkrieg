@@ -11,7 +11,7 @@ public:
 	KriegMap(int spacingX, int spacingY, int scrW, int scrH) :Map(spacingX, spacingY,scrW,scrH){
 
 	}
-
+	virtual void update();
 	virtual int loadMapFromFile(const std::string& filename);
 
 };

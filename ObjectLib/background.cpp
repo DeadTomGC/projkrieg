@@ -25,8 +25,12 @@ Background::Background(Block* parent) : Object(parent){
 }
 
 void Background::update(void){
-	//jack shit
+	
 	if (parent){
+		if (map)
+		{
+			primary->moveTo(parent->getX() - map->getScreenOffsetX(), parent->getY() - map->getScreenOffsetY());
+		}
 		if (parent->getRight()){
 			Object* temp = parent->getRight()->getFirstObject();
 			while (temp){

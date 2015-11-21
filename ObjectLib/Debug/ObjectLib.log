@@ -1,4 +1,4 @@
-﻿Build started 11/17/2015 12:54:59 AM.
+﻿Build started 11/18/2015 9:36:27 PM.
      1>Project "C:\Users\DeadTomGC\Documents\Visual Studio 2013\Projects\projkrieg\ObjectLib\ObjectLib.vcxproj" on node 3 (Rebuild target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D OBJECTLIB_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ..\projKrieg\object.cpp ..\projKrieg\Sprite.cpp ..\projKrieg\utils.cpp background.cpp Factory.cpp
@@ -20,4 +20,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.79
+Time Elapsed 00:00:01.64

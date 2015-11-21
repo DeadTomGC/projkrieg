@@ -13,9 +13,9 @@ int main(int argc, char *argv[]){
 	double speedx = 0, speedy = 0;
 	double damp = 0.15;
 
-	Sprite::createDefaultWindow("projKrieg", 30, 30, 640, 480, false);
+	Sprite::createDefaultWindow("projKrieg", 30, 30, 640, 480, true);
 	Sprite::setTargetFPS(60);
-	KriegMap* map = new KriegMap(200, 200, 640, 480);
+	KriegMap* map = new KriegMap(100, 100, 640, 480);
 	map->loadMapFromFile("sampleMap.kmap");
 	SDL_GetKeyboardState(&nkeys);
 	m_keystate = SDL_GetKeyboardState(0);
@@ -26,8 +26,19 @@ int main(int argc, char *argv[]){
 		if (m_keystate[SDL_SCANCODE_ESCAPE] == 1){
 			running = false;
 		}
-		
-		
+		if (m_keystate[SDL_SCANCODE_A] == 1){
+			map->setScreenOffset(map->getScreenOffsetX() + 1, map->getScreenOffsetY());
+		}
+		if (m_keystate[SDL_SCANCODE_D] == 1){
+			map->setScreenOffset(map->getScreenOffsetX() - 1, map->getScreenOffsetY());
+		}
+		if (m_keystate[SDL_SCANCODE_W] == 1){
+			map->setScreenOffset(map->getScreenOffsetX(), map->getScreenOffsetY() - 1);
+		}
+		if (m_keystate[SDL_SCANCODE_S] == 1){
+			map->setScreenOffset(map->getScreenOffsetX(), map->getScreenOffsetY() + 1);
+		}
+		map->update();
 		Sprite::renderSprites();
 		SDL_FlushEvents(SDL_QUIT, SDL_DROPFILE);
 	}

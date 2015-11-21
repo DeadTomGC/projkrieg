@@ -36,6 +36,8 @@ public:
 		this->spacingY = spacingY;
 		this->scrW = scrW;
 		this->scrH = scrH;
+		screenOffsetX = 0;
+		screenOffsetY = 0;
 		visBlocks = 0;
 		objectIndex = 0;
 		setSSD = 0;
@@ -49,12 +51,15 @@ public:
 
 
 	virtual int loadMapFromFile(const std::string& filename)=0;
+	virtual void update()=0;
 
 	int getScreenW(){ return scrW; }
 	int getScreenH(){ return scrH; }
 	int getScreenOffsetX(){ return screenOffsetX; }
 	int getScreenOffsetY(){ return screenOffsetY; }
+	void setScreenOffset(int screenOffsetX, int screenOffsetY){ this->screenOffsetX = screenOffsetX; this->screenOffsetY = screenOffsetY; }
 
 	Block* getVisBlocks(){ return visBlocks; }
 	void setVisBlocks(Block* visBlocks){ this->visBlocks = visBlocks; }
+
 };

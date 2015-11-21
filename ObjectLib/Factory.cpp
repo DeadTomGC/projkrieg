@@ -13,7 +13,6 @@ extern "C"{
 		}
 
 		return NULL;
-
 	}
 
 	__declspec(dllexport) Object* getObjectByIndex(int index){
@@ -28,16 +27,12 @@ extern "C"{
 			return NULL;
 			break;
 		}
-
-
-
 	}
 
 	__declspec(dllexport) Object* getFirstObject(){
 		//add object type creation here:
 		lastObject = 0;
 		return getObjectByIndex(lastObject);
-
 	}
 	__declspec(dllexport) Object* getNextObject(){
 		//add object type creation here:

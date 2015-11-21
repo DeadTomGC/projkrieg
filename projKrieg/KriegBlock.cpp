@@ -2,6 +2,14 @@
 
 void KriegBlock::update(){
 	checkView();
+	if (left)
+		left->checkView();
+	if (right)
+		right->checkView();
+	if (up)
+		up->checkView();
+	if (down)
+		down->checkView();
 	if (active){
 		Object *temp = first;
 		while (temp != NULL){
@@ -19,7 +27,7 @@ KriegBlock::KriegBlock(Map* map) : Block(map){
 	prev = 0;
 	first = 0;
 	map = 0;
-	active = false;
+	active = true;
 	upToDate = false;
 }
 

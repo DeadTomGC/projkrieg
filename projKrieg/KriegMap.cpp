@@ -136,11 +136,15 @@ int KriegMap::loadMapFromFile(const std::string& filename){
 						current->addToList(visBlocks);
 						if (allColNum == 0){
 							allColNum = colNum;
+							colNum = 1;
 						}
 						else if (colNum != allColNum){
 							//error case
 							std::cerr << "ERROR: inconsistent column counts due to line " << lineNum << std::endl;
 							return -1;
+						}
+						else{
+							colNum = 1;
 						}
 					}
 					else{
@@ -174,4 +178,12 @@ int KriegMap::getInt(char* text, int& start, int end){
 		result = result * 10 + text[start] - '0';
 	}
 	return result;
+}
+
+void KriegMap::update(){
+	Block* temp = visBlocks;
+	while (temp){
+		temp->update();
+		temp = temp->getNext();
+	}
 }
