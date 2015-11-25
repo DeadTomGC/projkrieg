@@ -338,10 +338,10 @@ void Sprite::renderSprites(){//good don't multithread this
 			ssd->fps = (CLOCKS_PER_SEC / ((double)period))*ssd->framesToAverage;
 			oldTime = clock();
 
-			if (period < CLOCKS_PER_SEC / 200){
+			if (period < CLOCKS_PER_SEC / 200 || ssd->framesToAverage<1){
 				ssd->framesToAverage++;
 			}
-			if (period > CLOCKS_PER_SEC / 50){
+			if (period > CLOCKS_PER_SEC / 50 && ssd->framesToAverage>1){
 				ssd->framesToAverage--;
 			}
 		}

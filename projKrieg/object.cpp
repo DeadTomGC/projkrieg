@@ -32,3 +32,17 @@ void Object::show(){
 		temp = temp->getNext();
 	}
 }
+
+void Object::relocateObject(int changeX, int changeY){
+
+	Sprite* temp = first;
+	while (temp){
+		if (map && parent)
+		{
+			temp->moveTo(changeX + temp->X(), changeY + temp->Y());
+		}
+		temp = temp->getNext();
+	}
+
+
+}

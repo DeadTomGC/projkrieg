@@ -9,7 +9,7 @@ class Block{
 protected:
 	Block *right, *left, *up, *down,*next,*prev;
 	Object* first;
-	int x, y;
+	int x, y,absX,absY;
 	int sizeX, sizeY;
 	Map* map;
 	bool upToDate,active;
@@ -41,6 +41,8 @@ public:
 	void setMap(Map* map){ this->map = map; }
 	Object* getFirstObject(){ return first; }
 	
+	virtual void checkViewAndNeighbors() = 0;
+	virtual void relocateBlock() = 0;
 	virtual void deActivateAndHide() = 0;
 	virtual void activateAndShow() = 0;
 	virtual void addObject(Object* object) = 0;

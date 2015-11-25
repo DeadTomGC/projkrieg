@@ -13,5 +13,6 @@ public:
 	}
 	virtual void update();
 	virtual int loadMapFromFile(const std::string& filename);
+	virtual void relocateBlocks();
 
 };

@@ -183,7 +183,24 @@ int KriegMap::getInt(char* text, int& start, int end){
 void KriegMap::update(){
 	Block* temp = visBlocks;
 	while (temp){
+		temp->checkViewAndNeighbors();
+		temp = temp->getNext();
+	}
+
+	relocateBlocks();
+
+	temp = visBlocks;
+	while (temp){
 		temp->update();
 		temp = temp->getNext();
 	}
+}
+
+void KriegMap::relocateBlocks(){
+	Block* temp = visBlocks;
+	while (temp){
+		temp->relocateBlock();
+		temp = temp->getNext();
+	}
+
 }

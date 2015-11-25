@@ -13,5 +13,6 @@ public:
 	virtual void addToList(Block* &firstInList);
 	virtual void deActivateAndHide();
 	virtual void activateAndShow();
-
+	virtual void relocateBlock();
+	virtual void checkViewAndNeighbors();
 };

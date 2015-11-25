@@ -52,6 +52,7 @@ public:
 
 	virtual int loadMapFromFile(const std::string& filename)=0;
 	virtual void update()=0;
+	virtual void relocateBlocks() = 0;
 
 	int getScreenW(){ return scrW; }
 	int getScreenH(){ return scrH; }

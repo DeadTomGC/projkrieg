@@ -1,15 +1,6 @@
 #include "KriegBlock.h"
 
 void KriegBlock::update(){
-	checkView();
-	if (left)
-		left->checkView();
-	if (right)
-		right->checkView();
-	if (up)
-		up->checkView();
-	if (down)
-		down->checkView();
 	if (active){
 		Object *temp = first;
 		while (temp != NULL){
@@ -27,6 +18,8 @@ KriegBlock::KriegBlock(Map* map) : Block(map){
 	prev = 0;
 	first = 0;
 	map = 0;
+	absX = 0;
+	absY = 0;
 	active = true;
 	upToDate = false;
 }
@@ -113,4 +106,28 @@ void KriegBlock::checkView(){
 	}
 };
 
+void KriegBlock::relocateBlock(){
+	int changeX = (getX() - map->getScreenOffsetX())-absX;
+	int changeY = (getY() - map->getScreenOffsetY())-absY;
+	Object* temp = first;
+	while (temp){
+		temp->relocateObject(changeX, changeY);
+		temp = temp->getNext();
+	}
+	absX = getX() - map->getScreenOffsetX();
+	absY = getY() - map->getScreenOffsetY();
+}
+void KriegBlock::checkViewAndNeighbors(){
+	checkView();
+	if (left)
+		left->checkView();
+	if (right)
+		right->checkView();
+	if (up)
+		up->checkView();
+	if (down)
+		down->checkView();
+}
+
 void KriegBlock::seekView(){};
+

@@ -15,7 +15,7 @@ Background::Background(Block* parent) : Object(parent){
 		primary->addImage("h8.bmp");
 		primary->addImage("h9.bmp");
 		primary->addImage("h10.bmp");
-		primary->moveTo(parent->getX(), parent->getY());
+		primary->moveTo(0, 0);
 		primary->sizeTo(parent->getSizeX(), parent->getSizeY());
 		primary->setAnimationFPF(10);
 		primary->setAnimationFrames(0, 9);
@@ -27,10 +27,7 @@ Background::Background(Block* parent) : Object(parent){
 void Background::update(void){
 	
 	if (parent){
-		if (map)
-		{
-			primary->moveTo(parent->getX() - map->getScreenOffsetX(), parent->getY() - map->getScreenOffsetY());
-		}
+		
 		if (parent->getRight()){
 			Object* temp = parent->getRight()->getFirstObject();
 			while (temp){

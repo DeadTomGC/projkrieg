@@ -23,7 +23,7 @@ public:
 
 	void hide();
 	void show();
-
+	void relocateObject(int changeX, int changeY);
 	virtual void update(void) = 0;  //override in subclasses
 	virtual Object* new_instance(Block* parent) = 0; //override in subclasses
 	virtual std::string* getTypeName() = 0;
