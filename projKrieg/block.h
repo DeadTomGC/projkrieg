@@ -9,7 +9,7 @@ class Block{
 protected:
 	Block *right, *left, *up, *down,*next,*prev;
 	Object* first;
-	int x, y,absX,absY;
+	double x, y,absX,absY;
 	int sizeX, sizeY;
 	Map* map;
 	bool upToDate,active;
@@ -29,10 +29,10 @@ public:
 	void setNext(Block* next){ this->next = next; }
 	Block* getPrev(){ return prev; }
 	void setPrev(Block* prev){ this->prev = prev; }
-	int getX(){ return x; }
-	void setX(int x){ this->x = x; }
-	int getY(){ return y; }
-	void setY(int y){ this->y = y; }
+	double getX(){ return x; }
+	void setX(double x){ this->x = x; }
+	double getY(){ return y; }
+	void setY(double y){ this->y = y; }
 	int getSizeX(){ return sizeX; }
 	void setSizeX(int sizeX){ this->sizeX = sizeX; }
 	int getSizeY(){ return sizeY; }

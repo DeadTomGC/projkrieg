@@ -56,20 +56,20 @@ int KriegMap::loadMapFromFile(const std::string& filename){
 		std::cerr << "could not locate the function setRenderer" << std::endl;
 		return -2;
 	}
-	//set renderer of the Dll so sprites are rendered to the same location
+	//set renderer and other shared data of the Dll so sprites are rendered to the same location
 	setSSD(Sprite::getSSD());
 
 	// read objects into array
 	objectCount = getTypeCount();
 	objectIndex = new Object*[objectCount];
-	Object* temp = getFirstObject();
+	Object* temp = getFirstObject(); //pull first object type
 	if (temp){
 		objectIndex[0] = temp;
 	}
 	else{
 		std::cerr << "ERROR: could not locate any Objects " <<std::endl;
 	}
-	for (int i = 1; i < objectCount; i++){
+	for (int i = 1; i < objectCount; i++){//pull rest of object types
 		objectIndex[i] = getNextObject();
 		if (!objectIndex[i]){
 			std::cerr << "ERROR: could not locate the object numbered " << i << std::endl;
@@ -90,7 +90,7 @@ int KriegMap::loadMapFromFile(const std::string& filename){
 		}
 		if (line[i] == '>'){
 			i++;
-			if (line[i] == '-'){
+			if (line[i] == '-'){ //start of map
 				current = new KriegBlock(this);
 				leftMost = current;
 				current->addToList(visBlocks);
@@ -101,7 +101,7 @@ int KriegMap::loadMapFromFile(const std::string& filename){
 				colNum++;
 			}
 			else
-				if (line[i] == '>'){
+				if (line[i] == '>'){//next in row
 					tempNew = new KriegBlock(this);
 
 					tempNew->setX(current->getX() + spacingX);
@@ -121,7 +121,7 @@ int KriegMap::loadMapFromFile(const std::string& filename){
 					colNum++;
 				}
 				else
-					if (line[i] == 'v'){
+					if (line[i] == 'v'){//next line/row
 						tempNew = new KriegBlock(this);
 						tempNew->setUp(leftMost);
 						leftMost->setDown(tempNew);
@@ -181,15 +181,15 @@ int KriegMap::getInt(char* text, int& start, int end){
 }
 
 void KriegMap::update(){
-	Block* temp = visBlocks;
+	Block* temp = visBlocks; // check all blocks to see if they should be loaded
 	while (temp){
 		temp->checkViewAndNeighbors();
 		temp = temp->getNext();
 	}
 
-	relocateBlocks();
+	relocateBlocks();// relocate all blocks to prepare them for update
 
-	temp = visBlocks;
+	temp = visBlocks;// update all blocks
 	while (temp){
 		temp->update();
 		temp = temp->getNext();
@@ -203,4 +203,8 @@ void KriegMap::relocateBlocks(){
 		temp = temp->getNext();
 	}
 
+}
+
+void KriegMap::move(double distPerFrameX, double distPerFrameY){
+	setScreenOffset(screenOffsetX + distPerFrameX*Sprite::getTargetFPS() / Sprite::getFPS(), screenOffsetY + distPerFrameY*Sprite::getTargetFPS() / Sprite::getFPS());
 }

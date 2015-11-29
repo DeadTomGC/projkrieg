@@ -13,7 +13,7 @@ int main(int argc, char *argv[]){
 	double speedx = 0, speedy = 0;
 	double damp = 0.15;
 
-	Sprite::createDefaultWindow("projKrieg", 30, 30, 640, 480, true);
+	Sprite::createDefaultWindow("projKrieg", 30, 30, 640, 480, false);
 	Sprite::setTargetFPS(60);
 	KriegMap* map = new KriegMap(100, 100, 640, 480);
 	map->loadMapFromFile("sampleMap.kmap");
@@ -27,16 +27,16 @@ int main(int argc, char *argv[]){
 			running = false;
 		}
 		if (m_keystate[SDL_SCANCODE_A] == 1){
-			map->setScreenOffset(map->getScreenOffsetX() + 1, map->getScreenOffsetY());
+			map->move(1, 0);
 		}
 		if (m_keystate[SDL_SCANCODE_D] == 1){
-			map->setScreenOffset(map->getScreenOffsetX() - 1, map->getScreenOffsetY());
+			map->move(- 1,0);
 		}
 		if (m_keystate[SDL_SCANCODE_W] == 1){
-			map->setScreenOffset(map->getScreenOffsetX(), map->getScreenOffsetY() - 1);
+			map->move(0, 1);
 		}
 		if (m_keystate[SDL_SCANCODE_S] == 1){
-			map->setScreenOffset(map->getScreenOffsetX(), map->getScreenOffsetY() + 1);
+			map->move(0, -1);
 		}
 		map->update();
 		Sprite::renderSprites();

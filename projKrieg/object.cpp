@@ -33,7 +33,7 @@ void Object::show(){
 	}
 }
 
-void Object::relocateObject(int changeX, int changeY){
+void Object::relocateObject(double changeX, double changeY){
 
 	Sprite* temp = first;
 	while (temp){

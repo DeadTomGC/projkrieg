@@ -18,7 +18,7 @@ protected:
 	Block *visBlocks;
 	Object** objectIndex;
 	int objectCount;
-	int screenOffsetX, screenOffsetY;
+	double screenOffsetX, screenOffsetY;
 	int scrW, scrH;
 	int spacingX,spacingY;
 	//functions
@@ -53,13 +53,14 @@ public:
 	virtual int loadMapFromFile(const std::string& filename)=0;
 	virtual void update()=0;
 	virtual void relocateBlocks() = 0;
+	virtual void move(double distPerFrameX, double distPerFrameY) = 0;
 
 	int getScreenW(){ return scrW; }
 	int getScreenH(){ return scrH; }
-	int getScreenOffsetX(){ return screenOffsetX; }
-	int getScreenOffsetY(){ return screenOffsetY; }
-	void setScreenOffset(int screenOffsetX, int screenOffsetY){ this->screenOffsetX = screenOffsetX; this->screenOffsetY = screenOffsetY; }
-
+	double getScreenOffsetX(){ return screenOffsetX; }
+	double getScreenOffsetY(){ return screenOffsetY; }
+	void setScreenOffset(double screenOffsetX, double screenOffsetY){ this->screenOffsetX = screenOffsetX; this->screenOffsetY = screenOffsetY; }
+	
 	Block* getVisBlocks(){ return visBlocks; }
 	void setVisBlocks(Block* visBlocks){ this->visBlocks = visBlocks; }
 

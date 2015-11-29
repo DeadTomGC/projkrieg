@@ -107,8 +107,8 @@ void KriegBlock::checkView(){
 };
 
 void KriegBlock::relocateBlock(){
-	int changeX = (getX() - map->getScreenOffsetX())-absX;
-	int changeY = (getY() - map->getScreenOffsetY())-absY;
+	double changeX = (getX() - map->getScreenOffsetX())-absX;
+	double changeY = (getY() - map->getScreenOffsetY())-absY;
 	Object* temp = first;
 	while (temp){
 		temp->relocateObject(changeX, changeY);
