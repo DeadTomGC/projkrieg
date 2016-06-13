@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "projKrieg", "projKrieg\proj
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ObjectLib", "ObjectLib\ObjectLib.vcxproj", "{44B4DC05-F112-4319-BD46-E68EE3971E9B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mapEditor", "mapEditor\mapEditor.vcxproj", "{A7AB70D9-E570-4FF6-8F3B-499FB6DE17FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -21,6 +23,10 @@ Global
 		{44B4DC05-F112-4319-BD46-E68EE3971E9B}.Debug|Win32.Build.0 = Debug|Win32
 		{44B4DC05-F112-4319-BD46-E68EE3971E9B}.Release|Win32.ActiveCfg = Release|Win32
 		{44B4DC05-F112-4319-BD46-E68EE3971E9B}.Release|Win32.Build.0 = Release|Win32
+		{A7AB70D9-E570-4FF6-8F3B-499FB6DE17FE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A7AB70D9-E570-4FF6-8F3B-499FB6DE17FE}.Debug|Win32.Build.0 = Debug|Win32
+		{A7AB70D9-E570-4FF6-8F3B-499FB6DE17FE}.Release|Win32.ActiveCfg = Release|Win32
+		{A7AB70D9-E570-4FF6-8F3B-499FB6DE17FE}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

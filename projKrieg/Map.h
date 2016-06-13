@@ -29,6 +29,10 @@ protected:
 	f_factory_n_obj getNextObject;
 	f_type_count getTypeCount;
 
+	virtual void relocateBlocks() = 0;
+	virtual void checkLoadedBlocks() = 0;
+	virtual void runUpdates() = 0;
+
 public:
 	//functions
 	Map(int spacingX, int spacingY, int scrW, int scrH){
@@ -52,7 +56,7 @@ public:
 
 	virtual int loadMapFromFile(const std::string& filename)=0;
 	virtual void update()=0;
-	virtual void relocateBlocks() = 0;
+
 	virtual void move(double distPerFrameX, double distPerFrameY) = 0;
 
 	int getScreenW(){ return scrW; }

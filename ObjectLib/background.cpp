@@ -28,8 +28,8 @@ void Background::update(void){
 	
 	if (parent){
 		
-		if (parent->getRight()){
-			Object* temp = parent->getRight()->getFirstObject();
+		if (parent->getLeft()){
+			Object* temp = parent->getLeft()->getFirstObject();
 			while (temp){
 				if (!temp->getTypeName()->compare(Background::typeName)){
 					((Background*)temp)->primary->stopAnim();

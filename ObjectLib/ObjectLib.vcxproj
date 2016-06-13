@@ -88,6 +88,7 @@
   <ItemGroup>
     <ClInclude Include="..\projKrieg\block.h" />
     <ClInclude Include="..\projKrieg\core.h" />
+    <ClInclude Include="..\projKrieg\entity.h" />
     <ClInclude Include="..\projKrieg\map.h" />
     <ClInclude Include="..\projKrieg\object.h" />
     <ClInclude Include="..\projKrieg\SharedSpriteData.h" />
@@ -99,6 +100,7 @@
     <ClInclude Include="SharedData.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\projKrieg\entity.cpp" />
     <ClCompile Include="..\projKrieg\object.cpp" />
     <ClCompile Include="..\projKrieg\Sprite.cpp" />
     <ClCompile Include="..\projKrieg\utils.cpp" />

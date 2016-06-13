@@ -60,6 +60,9 @@
     <ClInclude Include="..\projKrieg\SharedSpriteData.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="..\projKrieg\entity.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Factory.cpp">
@@ -75,6 +78,9 @@
       <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\projKrieg\object.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\projKrieg\entity.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
   </ItemGroup>

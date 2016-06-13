@@ -63,6 +63,9 @@
     <ClCompile Include="object.cpp">
       <Filter>Source Files\Engine\Core</Filter>
     </ClCompile>
+    <ClCompile Include="entity.cpp">
+      <Filter>Source Files\Engine\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprite.h">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="SharedSpriteData.h">
       <Filter>Header Files\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="entity.h">
+      <Filter>Header Files\Engine\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

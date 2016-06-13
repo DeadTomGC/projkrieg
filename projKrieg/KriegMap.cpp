@@ -181,28 +181,36 @@ int KriegMap::getInt(char* text, int& start, int end){
 }
 
 void KriegMap::update(){
+
+	checkLoadedBlocks();// check all blocks to see if they should be loaded
+
+	relocateBlocks();// relocate all blocks to prepare them for update
+
+	runUpdates();// update all blocks
+}
+
+void KriegMap::checkLoadedBlocks(){
 	Block* temp = visBlocks; // check all blocks to see if they should be loaded
 	while (temp){
 		temp->checkViewAndNeighbors();
 		temp = temp->getNext();
 	}
-
-	relocateBlocks();// relocate all blocks to prepare them for update
-
-	temp = visBlocks;// update all blocks
-	while (temp){
-		temp->update();
-		temp = temp->getNext();
-	}
 }
 
 void KriegMap::relocateBlocks(){
-	Block* temp = visBlocks;
+	Block* temp = visBlocks;// relocate all blocks to prepare them for update
 	while (temp){
 		temp->relocateBlock();
 		temp = temp->getNext();
 	}
+}
 
+void KriegMap::runUpdates(){
+	Block* temp = visBlocks;// update all blocks
+	while (temp){
+		temp->update();
+		temp = temp->getNext();
+	}
 }
 
 void KriegMap::move(double distPerFrameX, double distPerFrameY){
