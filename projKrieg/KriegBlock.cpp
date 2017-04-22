@@ -129,5 +129,5 @@ void KriegBlock::checkViewAndNeighbors(){
 		down->checkView();
 }
 
-void KriegBlock::seekView(){};
+void KriegBlock::seekView(){}
 
